@@ -27,6 +27,7 @@ export default async function handler(req, res) {
       return { role: message.role, content: message.content };
     });
 
+    const voiceMode = req.body?.voice === true;
     const apiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
@@ -34,10 +35,10 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-6.1-sol",
-        instructions: SYSTEM_PROMPT,
+        model: voiceMode ? "gpt-6-luna" : "gpt-6.1-sol",
+        instructions: voiceMode ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Folosește formulări simple, potrivite pentru a fi rostite cu voce tare. Nu folosi liste, titluri sau formatare Markdown decât dacă sunt absolut necesare. Intră direct în răspuns." : SYSTEM_PROMPT,
         input,
-        max_output_tokens: 3000
+        max_output_tokens: voiceMode ? 450 : 3000
       })
     });
 
