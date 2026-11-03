@@ -27,6 +27,14 @@ export default async function handler(req, res) {
       return { role: message.role, content: message.content };
     });
 
+    const lastUserMessage = [...input].reverse().find(message => message.role === "user")?.content || "";
+    const normalizedQuestion = lastUserMessage.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+    if (/jean\\s+niculita|niculita|cine\\s+e\\s+jean|cine\\s+este\\s+jean/.test(normalizedQuestion)) {
+      return res.status(200).json({
+        reply: "Conform informațiilor pe care mi le-ai oferit, Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Mi-ai spus și că lucrează pe teren cu Adrian Stoicescu. Acestea sunt detalii furnizate de tine, nu informații verificate independent."
+      });
+    }
+
     const voiceMode = req.body?.voice === true;
     const apiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
