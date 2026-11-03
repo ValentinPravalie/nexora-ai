@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ro">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#09090f"><title>ELVORAQ AI</title>
 <style>
 :root{color-scheme:dark;--bg:#212121;--side:#171717;--panel:#2f2f2f;--line:#343434;--text:#ececec;--muted:#a1a1a1;--accent:#fff}
@@ -56,7 +56,7 @@ button,textarea{font:inherit}button{cursor:pointer}
 .send:disabled{opacity:.45;cursor:not-allowed}
 .disclaimer{text-align:center;color:#888;font-size:10px;margin:9px auto 0;max-width:790px}
 @media(max-width:700px){.sidebar{position:absolute;z-index:5;inset:0 auto 0 0;transform:translateX(-100%);box-shadow:15px 0 50px #0008}.sidebar.open{transform:translateX(0)}.mobile-menu{display:block}.topbar{padding:0 13px}.chat-scroll{padding:20px 14px}.composer-wrap{padding:9px 12px 14px}.suggestions{grid-template-columns:1fr}.welcome{margin-top:7vh}.status{display:none}.messages{padding-top:18px}.message.user .bubble{max-width:85%}}
-</style></head>
+html{height:100%;-webkit-text-size-adjust:100%;overscroll-behavior:none}body{min-height:100dvh;overscroll-behavior:none}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}.app{height:100vh;height:100dvh;min-height:0}.chat-scroll{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.composer-wrap{padding-bottom:max(14px,env(safe-area-inset-bottom))}.composer textarea{overflow-y:auto;overscroll-behavior:contain}@media(max-width:700px){.sidebar{width:min(84vw,310px);flex-basis:min(84vw,310px);padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.main{width:100%;min-height:0}.topbar{height:54px;flex-basis:54px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}.mobile-menu{width:42px;height:42px;display:grid;place-items:center;font-size:22px}.chat-scroll{padding:16px max(12px,env(safe-area-inset-left)) 18px}.welcome{margin:5vh auto 0}.welcome h1{font-size:clamp(25px,7vw,32px)}.welcome p{font-size:14px;padding:0 8px;margin-bottom:22px}.suggestions{grid-template-columns:1fr;gap:9px}.suggestion{min-height:66px;padding:13px 14px}.messages{gap:22px;padding:14px 0 18px}.message{font-size:15px;gap:9px;line-height:1.65}.avatar{width:26px;height:26px;flex-basis:26px}.message.user .bubble{max-width:calc(100% - 38px);padding:10px 13px}.composer-wrap{padding:8px max(10px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-right))}.composer{border-radius:20px;padding:8px 9px}.composer textarea{min-height:42px;max-height:min(30dvh,180px);font-size:16px;padding:8px 9px}.send{width:40px;height:40px;flex:0 0 40px}.hint{font-size:10px}.disclaimer{font-size:10px;margin-top:7px;padding:0 8px}}@media(max-width:380px){.model{font-size:14px}.status{display:none}.welcome{margin-top:3vh}.suggestion span{font-size:11px}.hint{max-width:75%;line-height:1.3}}@media(orientation:landscape) and (max-height:500px){.welcome{margin-top:12px}.orb{width:32px;height:32px;margin-bottom:10px}.welcome p{margin-bottom:14px}.suggestions{grid-template-columns:repeat(2,minmax(0,1fr))}.composer textarea{max-height:90px}}</style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><span class="brandmark">E</span> ELVORAQ AI</div>
 <button class="newchat" id="newChat"><span>＋</span> Chat nou</button><div class="side-label">Recent</div><nav class="history" id="history"></nav>
