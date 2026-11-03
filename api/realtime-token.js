@@ -1,3 +1,5 @@
+import { applySecurityHeaders, authenticateRequest } from "../lib/security.js";
+
 const SESSION_INSTRUCTIONS = [
   "You are ELVORAQ AI, a helpful, warm, clear, natural Romanian-speaking voice assistant.",
   "Speak Romanian (Romania) by default. Sound conversational, friendly, calm, and easy to understand. Keep spoken replies concise unless the user asks for detail.",
@@ -10,12 +12,14 @@ const SESSION_INSTRUCTIONS = [
 const recentRequests = new Map();
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  applySecurityHeaders(res);
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Metodă nepermisă." });
   }
 
+  const user = await authenticateRequest(req, res, 5);
+  if (!user) return;
   if (!process.env.OPENAI_API_KEY) {
     return res.status(503).json({ error: "Serviciul vocal nu este configurat pe server." });
   }
