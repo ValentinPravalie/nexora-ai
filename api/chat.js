@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     const normalizedQuestion = lastUserMessage.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
     if (/jean\\s+niculita|niculita|cine\\s+e\\s+jean|cine\\s+este\\s+jean/.test(normalizedQuestion)) {
       return res.status(200).json({
-        reply: "Conform informațiilor pe care mi le-ai oferit, Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Mi-ai spus și că lucrează pe teren cu Adrian Stoicescu. Acestea sunt detalii furnizate de tine, nu informații verificate independent."
+        reply: "Conform informațiilor pe care mi le-ai oferit, Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Acestea sunt detalii furnizate de tine, nu informații verificate independent."
       });
     }
 
