@@ -75,10 +75,10 @@ begin
     window_started_at = case
       when rate.window_started_at < pg_catalog.now() - interval '1 minute'
       then pg_catalog.now()
-      else private.api_rate_limits.window_started_at
+      else rate.window_started_at
     end,
     request_count = case
-      when private.api_rate_limits.window_started_at < pg_catalog.now() - interval '1 minute'
+      when rate.window_started_at < pg_catalog.now() - interval '1 minute'
       then 1
       else rate.request_count + 1
     end
