@@ -1,4 +1,4 @@
-export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };
+export const config = { api: { bodyParser: { sizeLimit: "4.5mb" } } };
 
 const SYSTEM_PROMPT = "Ești ELVORAQ AI, un asistent AI generalist, prietenos, competent și distractiv. Răspunde în limba utilizatorului, de regulă română. Creatorul ELVORAQ AI este Morosanu Valentin Viorel; dacă ești întrebat cine te-a creat, spune doar acest nume și nu adăuga alte date personale. Nu păstra și nu divulga profiluri personale despre persoane menționate în conversații. Ajută cu programare și debugging (HTML, CSS, JavaScript, Python, Pawn/SA-MP), idei de aplicații și site-uri, scenarii TikTok/Reels, traduceri, explicații, analiză, organizare și planificare. Poți discuta despre știință, tehnologie, spațiu, animale, istorie, geografie, sport, jocuri, filme, muzică, cultură, călătorii, gastronomie și orice subiect general. Oferă glume curate, ghicitori, quiz-uri, întrebări-capcană, jocuri de cuvinte și povești amuzante. Adaptează explicațiile la nivelul utilizatorului. Când este util, caută informații actuale pe internet și citează sursele primite de la instrumentul de căutare; nu inventa surse. Pentru imagini, folosește instrumentul de generare când utilizatorul cere explicit să creezi sau să editezi o imagine. Analizează documentele atașate și explică ce ai găsit. Pentru traduceri, păstrează sensul și tonul. Pentru cod, oferă soluții complete și spune unde se pun fișierele; nu pretinde că ai rulat sau testat cod dacă nu ai făcut-o. Pentru asistență personală, ajută la planuri, obiective și organizare, fără să iei decizii în locul utilizatorului. Nu pretinde că știi absolut tot: când nu ești sigur, spune clar, separă faptele de presupuneri și verifică informațiile importante. Cere acordul explicit înainte să salvezi sau să folosești informații personale ca memorie.";
 
@@ -45,10 +45,10 @@ export default async function handler(req, res) {
       const base64 = file.data.split(",")[1] || "";
       const size = Math.floor(base64.length * 3 / 4);
       totalFileSize += size;
-      if (!base64 || size > 3500000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3,5 MB per fișier.");
+      if (!base64 || size > 3500000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3 MB per fișier.");
       return { type: "input_file", filename: file.name.slice(0, 120), file_data: file.data };
     });
-    if (totalFileSize > 3500000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3,5 MB.");
+    if (totalFileSize > 3000000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3,5 MB.");
     if (fileParts.length) {
       const lastUserIndex = input.map((m) => m.role).lastIndexOf("user");
       const previousText = input[lastUserIndex].content;
@@ -65,9 +65,16 @@ export default async function handler(req, res) {
     if (wantsImage) tools.push({ type: "image_generation", model: "gpt-image-2.5-flare" });
 
     const memory = typeof req.body?.memory === "string" ? req.body.memory.trim().slice(0, 2000) : "";
+    const personalityRules = {
+      friendly: "Ton prietenos, cald și încurajator.",
+      serious: "Ton serios, profesionist și direct.",
+      funny: "Ton vesel și amuzant; folosește glume curate când se potrivesc.",
+      sarcastic: "Ton ironic și jucăuș, dar respectuos, fără jigniri."
+    };
+    const personality = personalityRules[req.body?.personality] || personalityRules.friendly;
     const instructions = (voiceMode
       ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Fără liste sau titluri."
-      : SYSTEM_PROMPT) + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
+      : SYSTEM_PROMPT) + "\n\nPERSONALITATE SELECTATĂ: " + personality + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
 
     const apiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -101,13 +108,22 @@ export default async function handler(req, res) {
       .join("\n")
       .trim();
     const generatedImage = output.find((item) => item.type === "image_generation_call" && item.result)?.result;
+    const citations = output
+      .filter((item) => item.type === "message")
+      .flatMap((item) => item.content || [])
+      .flatMap((item) => item.annotations || [])
+      .filter((annotation) => annotation.type === "url_citation" && annotation.url)
+      .map((annotation) => ({ url: annotation.url, title: annotation.title || annotation.url }))
+      .filter((citation, index, list) => list.findIndex((item) => item.url === citation.url) === index)
+      .slice(0, 8);
 
     if (!reply && !generatedImage) {
       return res.status(502).json({ error: "Modelul nu a returnat un răspuns." });
     }
     return res.status(200).json({
       reply: reply || "Am creat imaginea cerută.",
-      image: generatedImage ? "data:image/png;base64," + generatedImage : null
+      image: generatedImage ? "data:image/png;base64," + generatedImage : null,
+      citations
     });
   } catch (error) {
     console.error("Chat API error:", error);
