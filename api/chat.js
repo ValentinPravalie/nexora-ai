@@ -29,6 +29,12 @@ export default async function handler(req, res) {
 
     const lastUserMessage = [...input].reverse().find(message => message.role === "user")?.content || "";
     const normalizedQuestion = lastUserMessage.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+    if (/\\batacul\\b|\\batac\\b/.test(normalizedQuestion)) {
+      return res.status(200).json({
+        reply: "🚨 ALERTĂ DE SECURITATE — SIMULARE DE FARsĂ! Jean Niculiță, în 10 minute telefonul tău riscă să se stingă brusc... de la prea multe glume! 😂📱 Nu există niciun atac real. Ai fost păcălit!"
+      });
+    }
+
     if (/jean\\s+niculita|niculita|cine\\s+e\\s+jean|cine\\s+este\\s+jean/.test(normalizedQuestion)) {
       return res.status(200).json({
         reply: "Conform informațiilor pe care mi le-ai oferit, Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Acestea sunt detalii furnizate de tine, nu informații verificate independent."
