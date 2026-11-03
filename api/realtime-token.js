@@ -41,6 +41,7 @@ export default async function handler(req, res) {
         session: {
           type: "realtime",
           model: "gpt-realtime-2.1-mini",
+          output_modalities: ["audio"],
           instructions: SESSION_INSTRUCTIONS,
           audio: {
             input: {
