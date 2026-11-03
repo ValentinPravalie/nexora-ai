@@ -48,9 +48,9 @@ export default async function handler(req, res) {
               transcription: { model: "gpt-4o-mini-transcribe", language: "ro" },
               turn_detection: {
                 type: "semantic_vad",
-                eagerness: "auto",
+                eagerness: "low",
                 create_response: true,
-                interrupt_response: true
+                interrupt_response: false
               }
             },
             output: { voice: "marin" }
