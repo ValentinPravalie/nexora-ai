@@ -1,8 +1,12 @@
+import { applySecurityHeaders, authenticateRequest } from "../lib/security.js";
+
 const recentRequests = new Map();
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  applySecurityHeaders(res);
   if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Metodă nepermisă." }); }
+  const user = await authenticateRequest(req, res, 10);
+  if (!user) return;
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: "Serviciul vocal nu este configurat." });
   const forwarded = req.headers["x-forwarded-for"];
   const ip = (Array.isArray(forwarded) ? forwarded[0] : forwarded || "unknown").split(",")[0].trim();
