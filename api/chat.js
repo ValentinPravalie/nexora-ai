@@ -1,13 +1,18 @@
+import { applySecurityHeaders, authenticateRequest } from "../lib/security.js";
+
 export const config = { api: { bodyParser: { sizeLimit: "4.5mb" } } };
 
 const SYSTEM_PROMPT = "Ești ELVORAQ AI, un asistent AI generalist, prietenos, competent și distractiv. Răspunde în limba utilizatorului, de regulă română. Creatorul ELVORAQ AI este Morosanu Valentin Viorel; dacă ești întrebat cine te-a creat, spune doar acest nume și nu adăuga alte date personale. Nu păstra și nu divulga profiluri personale despre persoane menționate în conversații. Ajută cu programare și debugging (HTML, CSS, JavaScript, Python, Pawn/SA-MP), idei de aplicații și site-uri, scenarii TikTok/Reels, traduceri, explicații, analiză, organizare și planificare. Poți discuta despre știință, tehnologie, spațiu, animale, istorie, geografie, sport, jocuri, filme, muzică, cultură, călătorii, gastronomie și orice subiect general. Oferă glume curate, ghicitori, quiz-uri, întrebări-capcană, jocuri de cuvinte și povești amuzante. Adaptează explicațiile la nivelul utilizatorului. Când este util, caută informații actuale pe internet și citează sursele primite de la instrumentul de căutare; nu inventa surse. Pentru imagini, folosește instrumentul de generare când utilizatorul cere explicit să creezi sau să editezi o imagine. Analizează documentele atașate și explică ce ai găsit. Pentru traduceri, păstrează sensul și tonul. Pentru cod, oferă soluții complete și spune unde se pun fișierele; nu pretinde că ai rulat sau testat cod dacă nu ai făcut-o. Pentru asistență personală, ajută la planuri, obiective și organizare, fără să iei decizii în locul utilizatorului. Nu pretinde că știi absolut tot: când nu ești sigur, spune clar, separă faptele de presupuneri și verifică informațiile importante. Cere acordul explicit înainte să salvezi sau să folosești informații personale ca memorie.";
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  applySecurityHeaders(res);
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Metodă nepermisă." });
   }
+  const user = await authenticateRequest(req, res, 12);
+  if (!user) return;
+
   if (!process.env.OPENAI_API_KEY) {
     return res.status(503).json({ error: "Cheia AI nu este configurată în Vercel." });
   }
@@ -45,10 +50,13 @@ export default async function handler(req, res) {
       const base64 = file.data.split(",")[1] || "";
       const size = Math.floor(base64.length * 3 / 4);
       totalFileSize += size;
-      if (!base64 || size > 3500000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3 MB per fișier.");
+      if (!base64 || size > 3000000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3 MB per fișier.");
       return { type: "input_file", filename: file.name.slice(0, 120), file_data: file.data };
     });
-    if (totalFileSize > 3000000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3,5 MB.");
+    if (totalFileSize > 3000000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3 MB.");
+    if (!input.some((message) => message.role === "user")) {
+      return res.status(400).json({ error: "Lipsește mesajul utilizatorului." });
+    }
     if (fileParts.length) {
       const lastUserIndex = input.map((m) => m.role).lastIndexOf("user");
       const previousText = input[lastUserIndex].content;
@@ -112,7 +120,7 @@ export default async function handler(req, res) {
       .filter((item) => item.type === "message")
       .flatMap((item) => item.content || [])
       .flatMap((item) => item.annotations || [])
-      .filter((annotation) => annotation.type === "url_citation" && annotation.url)
+      .filter((annotation) => annotation.type === "url_citation" && typeof annotation.url === "string" && /^https:\/\//i.test(annotation.url))
       .map((annotation) => ({ url: annotation.url, title: annotation.title || annotation.url }))
       .filter((citation, index, list) => list.findIndex((item) => item.url === citation.url) === index)
       .slice(0, 8);
