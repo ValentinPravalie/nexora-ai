@@ -47,11 +47,15 @@ export default async function handler(req, res) {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "text/csv"];
       if (!allowed.includes(file.mimeType)) throw new Error("Format neacceptat. Folosește PDF, TXT, MD, CSV, DOCX, PPTX sau XLSX.");
-      const base64 = file.data.split(",")[1] || "";
+      const prefix = `data:${file.mimeType};base64,`;
+      if (!file.data.startsWith(prefix)) throw new Error("Tipul real al fișierului nu corespunde formatului declarat.");
+      const base64 = file.data.slice(prefix.length);
+      if (!/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) throw new Error("Conținutul fișierului nu este valid.");
       const size = Math.floor(base64.length * 3 / 4);
       totalFileSize += size;
       if (!base64 || size > 3000000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3 MB per fișier.");
-      return { type: "input_file", filename: file.name.slice(0, 120), file_data: file.data };
+      const safeName = file.name.replace(/[\\/\x00-\x1f]/g, "_").slice(0, 120) || "document";
+      return { type: "input_file", filename: safeName, file_data: file.data };
     });
     if (totalFileSize > 3000000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3 MB.");
     if (!input.some((message) => message.role === "user")) {
