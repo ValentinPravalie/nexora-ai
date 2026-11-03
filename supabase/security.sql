@@ -35,16 +35,24 @@ create schema if not exists private;
 revoke all on schema private from public, anon, authenticated;
 
 create table if not exists private.api_rate_limits (
-  user_id uuid primary key references auth.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  bucket text not null default 'default',
   window_started_at timestamptz not null,
-  request_count integer not null default 0 check (request_count >= 0)
+  request_count integer not null default 0 check (request_count >= 0),
+  primary key (user_id, bucket)
 );
+
+alter table private.api_rate_limits add column if not exists bucket text not null default 'default';
+alter table private.api_rate_limits drop constraint if exists api_rate_limits_pkey;
+alter table private.api_rate_limits add constraint api_rate_limits_pkey primary key (user_id, bucket);
 
 revoke all on table private.api_rate_limits from public, anon, authenticated;
 alter table private.api_rate_limits enable row level security;
 alter table private.api_rate_limits force row level security;
 
-create or replace function public.consume_api_rate_limit(p_limit integer default 12)
+drop function if exists public.consume_api_rate_limit(integer);
+
+create or replace function public.consume_api_rate_limit(p_limit integer default 12, p_bucket text default 'default')
 returns boolean
 language plpgsql
 security definer
@@ -53,15 +61,16 @@ as $$
 declare
   v_user_id uuid := auth.uid();
   v_count integer;
+  v_bucket text := left(coalesce(p_bucket, 'default'), 80);
   v_limit integer := greatest(1, least(coalesce(p_limit, 12), 60));
 begin
   if v_user_id is null then
     return false;
   end if;
 
-  insert into private.api_rate_limits (user_id, window_started_at, request_count)
-  values (v_user_id, pg_catalog.now(), 1)
-  on conflict (user_id) do update
+  insert into private.api_rate_limits (user_id, bucket, window_started_at, request_count)
+  values (v_user_id, v_bucket, pg_catalog.now(), 1)
+  on conflict (user_id, bucket) do update
   set
     window_started_at = case
       when private.api_rate_limits.window_started_at < pg_catalog.now() - interval '1 minute'
@@ -79,7 +88,7 @@ begin
 end;
 $$;
 
-revoke all on function public.consume_api_rate_limit(integer) from public, anon;
-grant execute on function public.consume_api_rate_limit(integer) to authenticated;
+revoke all on function public.consume_api_rate_limit(integer, text) from public, anon;
+grant execute on function public.consume_api_rate_limit(integer, text) to authenticated;
 
 commit;
