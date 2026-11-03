@@ -1,0 +1,11 @@
+{
+  "name": "ELVORAQ AI",
+  "short_name": "ELVORAQ",
+  "description": "Asistentul tău de inteligență artificială",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#090b14",
+  "theme_color": "#090b14",
+  "lang": "ro"
+}
