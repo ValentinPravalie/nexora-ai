@@ -1,5 +1,5 @@
 -- ELVORAQ AI: panou de administrator cu acces controlat pe server.
--- Rulează în Supabase SQL Editor după ce contul brbvaly@gmail.com a fost creat și adresa de e-mail confirmată.
+-- Rulează o singură dată în Supabase SQL Editor. Contul trebuie să existe și e-mailul să fie confirmat înainte de autentificarea ca administrator.
 
 begin;
 
