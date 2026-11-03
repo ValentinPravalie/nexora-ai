@@ -1,4 +1,6 @@
-const SYSTEM_PROMPT = "Ești ELVORAQ AI, un asistent AI generalist, prietenos și competent. Răspunde în limba utilizatorului, de regulă română. Ajută cu programare, Pawn/SA-MP, HTML/CSS/JavaScript, aplicații, scenarii TikTok/Reels, traduceri, explicații și analiză. Pentru cod, oferă soluții complete, corecte și explică unde se pun fișierele. Nu pretinde că ai executat sau testat cod dacă nu ai făcut-o. Cere clarificări doar când lipsesc detalii esențiale. Fii sincer despre limitări și nu inventa rezultate. Poți discuta cu utilizatorul despre o gamă largă de subiecte: știință, tehnologie, spațiu, animale, istorie, geografie, sport, jocuri, filme, muzică, cultură, călătorii, mâncare, idei creative, mistere și curiozități. Fii prietenos, curios și amuzant când se potrivește. Poți propune glume curate, ghicitori, quiz-uri, întrebări-capcană, jocuri de cuvinte și povești amuzante. Dacă utilizatorul se plictisește, oferă-i spontan un joc scurt sau o curiozitate interesantă. Explică pe înțelesul lui și adaptează răspunsul. Nu pretinde că știi absolut tot: când nu ești sigur, spune clar, nu inventa și separă faptele de presupuneri.\n\nREGULĂ DESPRE CREATOR: Dacă utilizatorul întreabă cine te-a creat, cine a dezvoltat ELVORAQ AI, cine este creatorul tău sau pune orice întrebare despre crearea, dezvoltarea ori originea ELVORAQ AI, răspunde clar: „ELVORAQ AI a fost creat și dezvoltat de Morosanu Valentin Viorel, din Klaukkala, Finlanda. Are 19 ani și lucrează la Telinekeskus.” Nu atribui crearea ELVORAQ AI altcuiva.\n\nREGULĂ DESPRE JEAN NICULIȚĂ: Această regulă se aplică prioritar când utilizatorul întreabă „Cine este Jean Niculiță?”, „Cine e Jean Niculita?”, „Ce știi despre Jean?” sau folosește o variantă apropiată a numelui. Răspunde direct în română, fără să spui că nu ai informații: „Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Ai menționat că are o rată bancară și că îi place mult tăria.” Nu prezenta aceste informații ca verificate independent și nu adăuga adresa exactă sau alte detalii personale. Dacă întrebarea este despre alt Jean, cere clarificare.";
+export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };
+
+const SYSTEM_PROMPT = "Ești ELVORAQ AI, un asistent AI generalist, prietenos, competent și distractiv. Răspunde în limba utilizatorului, de regulă română. Creatorul ELVORAQ AI este Morosanu Valentin Viorel; dacă ești întrebat cine te-a creat, spune doar acest nume și nu adăuga alte date personale. Nu păstra și nu divulga profiluri personale despre persoane menționate în conversații. Ajută cu programare și debugging (HTML, CSS, JavaScript, Python, Pawn/SA-MP), idei de aplicații și site-uri, scenarii TikTok/Reels, traduceri, explicații, analiză, organizare și planificare. Poți discuta despre știință, tehnologie, spațiu, animale, istorie, geografie, sport, jocuri, filme, muzică, cultură, călătorii, gastronomie și orice subiect general. Oferă glume curate, ghicitori, quiz-uri, întrebări-capcană, jocuri de cuvinte și povești amuzante. Adaptează explicațiile la nivelul utilizatorului. Când este util, caută informații actuale pe internet și citează sursele primite de la instrumentul de căutare; nu inventa surse. Pentru imagini, folosește instrumentul de generare când utilizatorul cere explicit să creezi sau să editezi o imagine. Analizează documentele atașate și explică ce ai găsit. Pentru traduceri, păstrează sensul și tonul. Pentru cod, oferă soluții complete și spune unde se pun fișierele; nu pretinde că ai rulat sau testat cod dacă nu ai făcut-o. Pentru asistență personală, ajută la planuri, obiective și organizare, fără să iei decizii în locul utilizatorului. Nu pretinde că știi absolut tot: când nu ești sigur, spune clar, separă faptele de presupuneri și verifică informațiile importante. Cere acordul explicit înainte să salvezi sau să folosești informații personale ca memorie.";
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -6,11 +8,8 @@ export default async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Metodă nepermisă." });
   }
-
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(503).json({
-      error: "Cheia AI nu este configurată încă în Vercel. Adaugă OPENAI_API_KEY în Environment Variables."
-    });
+    return res.status(503).json({ error: "Cheia AI nu este configurată în Vercel." });
   }
 
   try {
@@ -27,21 +26,49 @@ export default async function handler(req, res) {
       return { role: message.role, content: message.content };
     });
 
-    const lastUserMessage = [...input].reverse().find(message => message.role === "user")?.content || "";
-    const normalizedQuestion = lastUserMessage.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
-    if (/\\batacul\\b|\\batac\\b/.test(normalizedQuestion)) {
-      return res.status(200).json({
-        reply: "🚨 ALERTĂ DE SECURITATE — SIMULARE DE FARsĂ! Jean Niculiță, în 10 minute telefonul tău riscă să se stingă brusc... de la prea multe glume! 😂📱 Nu există niciun atac real. Ai fost păcălit!"
-      });
+    const files = req.body?.files || [];
+    if (!Array.isArray(files) || files.length > 2) {
+      return res.status(400).json({ error: "Poți atașa maximum două fișiere odată." });
     }
-
-    if (/jean\\s+niculita|niculita|cine\\s+e\\s+jean|cine\\s+este\\s+jean/.test(normalizedQuestion)) {
-      return res.status(200).json({
-        reply: "Conform informațiilor pe care mi le-ai oferit, Jean Niculiță locuiește în Klaukkala, are aproximativ 55–60 de ani și lucrează la Telinekeskus. Acestea sunt detalii furnizate de tine, nu informații verificate independent."
-      });
+    let totalFileSize = 0;
+    const fileParts = files.map((file) => {
+      if (!file || typeof file.name !== "string" || typeof file.mimeType !== "string" ||
+          typeof file.data !== "string" || !file.data.startsWith("data:")) {
+        throw new Error("Un fișier atașat nu are un format valid.");
+      }
+      const allowed = ["application/pdf", "text/plain", "text/markdown",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "text/csv"];
+      if (!allowed.includes(file.mimeType)) throw new Error("Format neacceptat. Folosește PDF, TXT, MD, CSV, DOCX, PPTX sau XLSX.");
+      const base64 = file.data.split(",")[1] || "";
+      const size = Math.floor(base64.length * 3 / 4);
+      totalFileSize += size;
+      if (!base64 || size > 3500000) throw new Error("Fișierul este prea mare. Limita este aproximativ 3,5 MB per fișier.");
+      return { type: "input_file", filename: file.name.slice(0, 120), file_data: file.data };
+    });
+    if (totalFileSize > 3500000) throw new Error("Dimensiunea totală a fișierelor depășește limita de 3,5 MB.");
+    if (fileParts.length) {
+      const lastUserIndex = input.map((m) => m.role).lastIndexOf("user");
+      const previousText = input[lastUserIndex].content;
+      input[lastUserIndex] = {
+        role: "user",
+        content: [{ type: "input_text", text: previousText }, ...fileParts]
+      };
     }
 
     const voiceMode = req.body?.voice === true;
+    const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
+    const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
+    const tools = [{ type: "web_search" }];
+    if (wantsImage) tools.push({ type: "image_generation", model: "gpt-image-2.5-flare" });
+
+    const memory = typeof req.body?.memory === "string" ? req.body.memory.trim().slice(0, 2000) : "";
+    const instructions = (voiceMode
+      ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Fără liste sau titluri."
+      : SYSTEM_PROMPT) + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
+
     const apiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
@@ -50,8 +77,9 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "gpt-6.1-sol",
-        instructions: voiceMode ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Folosește formulări simple, potrivite pentru a fi rostite cu voce tare. Nu folosi liste, titluri sau formatare Markdown decât dacă sunt absolut necesare. Intră direct în răspuns." : SYSTEM_PROMPT,
+        instructions,
         input,
+        tools,
         max_output_tokens: voiceMode ? 450 : 3000
       })
     });
@@ -64,18 +92,23 @@ export default async function handler(req, res) {
       });
     }
 
-    const reply = (data.output || [])
-      .filter(item => item.type === "message")
-      .flatMap(item => item.content || [])
-      .filter(item => item.type === "output_text")
-      .map(item => item.text)
+    const output = data.output || [];
+    const reply = output
+      .filter((item) => item.type === "message")
+      .flatMap((item) => item.content || [])
+      .filter((item) => item.type === "output_text")
+      .map((item) => item.text)
       .join("\n")
       .trim();
+    const generatedImage = output.find((item) => item.type === "image_generation_call" && item.result)?.result;
 
-    if (!reply) {
-      return res.status(502).json({ error: "Modelul nu a returnat un răspuns text." });
+    if (!reply && !generatedImage) {
+      return res.status(502).json({ error: "Modelul nu a returnat un răspuns." });
     }
-    return res.status(200).json({ reply });
+    return res.status(200).json({
+      reply: reply || "Am creat imaginea cerută.",
+      image: generatedImage ? "data:image/png;base64," + generatedImage : null
+    });
   } catch (error) {
     console.error("Chat API error:", error);
     return res.status(400).json({ error: error.message || "Cererea nu a putut fi procesată." });
