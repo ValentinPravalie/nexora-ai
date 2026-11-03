@@ -1,15 +1,21 @@
-export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };
+import { applySecurityHeaders, authenticateRequest } from "../lib/security.js";
+
+export const config = { api: { bodyParser: { sizeLimit: "4.5mb" } } };
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  applySecurityHeaders(res);
   if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Metodă nepermisă." }); }
+  const user = await authenticateRequest(req, res, 8);
+  if (!user) return;
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: "Serviciul de transcriere nu este configurat." });
   try {
     const { audioBase64, mimeType } = req.body || {};
-    if (typeof audioBase64 !== "string" || !audioBase64 || audioBase64.length > 4700000) return res.status(400).json({ error: "Înregistrarea este goală sau prea mare. Încearcă un mesaj mai scurt." });
+    if (typeof audioBase64 !== "string" || !audioBase64 || audioBase64.length > 4200000) return res.status(400).json({ error: "Înregistrarea este goală sau prea mare. Încearcă un mesaj mai scurt." });
     const buffer = Buffer.from(audioBase64, "base64");
     if (!buffer.length) return res.status(400).json({ error: "Nu am primit sunet de la microfon." });
-    const safeMime = typeof mimeType === "string" && mimeType.startsWith("audio/") ? mimeType : "audio/mp4";
+    const allowedMime = ["audio/mp4", "audio/m4a", "audio/webm", "audio/webm;codecs=opus", "audio/mpeg", "audio/wav", "audio/x-wav"];
+    if (typeof mimeType !== "string" || !allowedMime.includes(mimeType.toLowerCase())) return res.status(400).json({ error: "Formatul înregistrării audio nu este acceptat." });
+    const safeMime = mimeType.toLowerCase();
     const ext = safeMime.includes("webm") ? "webm" : safeMime.includes("mpeg") ? "mp3" : safeMime.includes("wav") ? "wav" : "m4a";
     const form = new FormData();
     form.append("file", new Blob([buffer], { type: safeMime }), "recording." + ext);
