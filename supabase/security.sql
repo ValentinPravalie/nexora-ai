@@ -48,7 +48,7 @@ alter table private.api_rate_limits add constraint api_rate_limits_pkey primary 
 
 revoke all on table private.api_rate_limits from public, anon, authenticated;
 alter table private.api_rate_limits enable row level security;
-alter table private.api_rate_limits force row level security;
+alter table private.api_rate_limits no force row level security;
 
 drop function if exists public.consume_api_rate_limit(integer);
 
@@ -68,19 +68,19 @@ begin
     return false;
   end if;
 
-  insert into private.api_rate_limits (user_id, bucket, window_started_at, request_count)
+  insert into private.api_rate_limits as rate (user_id, bucket, window_started_at, request_count)
   values (v_user_id, v_bucket, pg_catalog.now(), 1)
   on conflict (user_id, bucket) do update
   set
     window_started_at = case
-      when private.api_rate_limits.window_started_at < pg_catalog.now() - interval '1 minute'
+      when rate.window_started_at < pg_catalog.now() - interval '1 minute'
       then pg_catalog.now()
       else private.api_rate_limits.window_started_at
     end,
     request_count = case
       when private.api_rate_limits.window_started_at < pg_catalog.now() - interval '1 minute'
       then 1
-      else private.api_rate_limits.request_count + 1
+      else rate.request_count + 1
     end
   returning request_count into v_count;
 
