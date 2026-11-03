@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         session: {
           type: "realtime",
-          model: "gpt-realtime-2.1-mini",
+          model: "gpt-realtime-2.1",
           output_modalities: ["audio"],
           instructions: SESSION_INSTRUCTIONS,
           audio: {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
                 interrupt_response: false
               }
             },
-            output: { voice: "marin" }
+            output: { voice: "marin", speed: 1.08 }
           }
         }
       })
