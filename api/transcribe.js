@@ -11,6 +11,7 @@ export default async function handler(req, res) {
   try {
     const { audioBase64, mimeType } = req.body || {};
     if (typeof audioBase64 !== "string" || !audioBase64 || audioBase64.length > 4200000) return res.status(400).json({ error: "Înregistrarea este goală sau prea mare. Încearcă un mesaj mai scurt." });
+    if (!/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64)) return res.status(400).json({ error: "Înregistrarea audio nu are un format valid." });
     const buffer = Buffer.from(audioBase64, "base64");
     if (!buffer.length) return res.status(400).json({ error: "Nu am primit sunet de la microfon." });
     const allowedMime = ["audio/mp4", "audio/m4a", "audio/webm", "audio/webm;codecs=opus", "audio/mpeg", "audio/wav", "audio/x-wav"];
