@@ -1,1 +1,188 @@
 
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELVORAQ AI — Your AI Workspace</title>
+<meta name="description" content="ELVORAQ AI — Intelligent tools for creators, students and entrepreneurs.">
+<style>
+:root{--bg:#090914;--panel:#121222;--line:#28283e;--purple:#9665ff;--blue:#428cff;--muted:#aaa9bd;--white:#f7f5ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+header{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;background:#090914ed;z-index:5;backdrop-filter:blur(15px)}
+.logo{font-size:23px;font-weight:900;letter-spacing:2px}.logo span{color:#a78bfa}
+.actions{display:flex;gap:10px;align-items:center}
+.btn{border:1px solid var(--line);background:#171728;color:white;border-radius:9px;padding:10px 15px}
+.primary{background:linear-gradient(110deg,#9058f5,#397ef6);border:0;color:white;border-radius:9px;padding:12px 19px;font-weight:700}
+.wrap{max-width:1200px;margin:auto;padding:35px 22px}
+.hero{border:1px solid #393053;border-radius:20px;padding:45px;background:radial-gradient(ellipse at 90% 10%,#34205d 0%,transparent 48%),linear-gradient(120deg,#19142b,#11172c);margin-bottom:35px}
+.eyebrow{color:#b99cff;font-size:11px;letter-spacing:3px;font-weight:bold}
+h1{font-size:clamp(35px,6vw,57px);line-height:1.12;margin:18px 0}
+.gradient{background:linear-gradient(90deg,#bd9bff,#6cafff);background-clip:text;color:transparent}
+.hero p{color:#c3c0d5;max-width:580px;line-height:1.7}
+.hero .primary{margin-top:12px}
+h2{font-size:22px;margin:30px 0 17px}
+.search{width:100%;max-width:480px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:white;outline:none}
+.search:focus,textarea:focus{border-color:var(--purple)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0 23px}
+.filter{border:1px solid var(--line);background:var(--panel);color:#c6c3d8;border-radius:30px;padding:8px 14px}
+.filter.active{background:#38255b;border-color:#8e63e8;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:var(--panel);border:1px solid var(--line);padding:20px;border-radius:15px;cursor:pointer;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#8d62ed;background:#19172c}
+.ico{font-size:27px;margin-bottom:16px}
+.card h3{font-size:15px;margin:0 0 9px}
+.card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.open{display:block;margin-top:17px;color:#b89aff;font-size:12px}
+.workspace{display:none;background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:25px;margin-top:25px}
+.workspace.show{display:block}
+.workspace h2{margin-top:18px}
+.workspace textarea{width:100%;min-height:150px;background:#090914;border:1px solid var(--line);color:white;border-radius:10px;padding:15px;resize:vertical;margin:12px 0}
+.output{white-space:pre-wrap;line-height:1.7;background:#090914;border:1px solid var(--line);border-radius:10px;padding:17px;margin:15px 0;min-height:70px;color:#ded8f5}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+footer{border-top:1px solid var(--line);text-align:center;padding:30px;color:#77758b;font-size:12px;margin-top:55px}
+#dashboard{display:block}
+@media(max-width:600px){header{padding:0 15px}.wrap{padding:22px 15px}.hero{padding:26px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:14px}.logo{font-size:19px}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">ELVORAQ<span> AI</span></div>
+<div class="actions">
+<button class="btn" onclick="toggleLanguage()">🌐 <span id="lang">RO</span></button>
+<button class="primary" onclick="document.getElementById('toolsTitle').scrollIntoView({behavior:'smooth'})">Explore AI</button>
+</div>
+</header>
+<main class="wrap">
+<section id="dashboard">
+<div class="hero">
+<div class="eyebrow">THE FUTURE OF CREATIVITY</div>
+<h1 id="heroTitle">Ideile tale.<br><span class="gradient">Puterea AI.</span></h1>
+<p id="heroText">Toate instrumentele de inteligență artificială de care ai nevoie, într-un singur loc. Creează, învață și dezvoltă-ți afacerea cu ELVORAQ AI.</p>
+<button class="primary" onclick="document.getElementById('toolsTitle').scrollIntoView({behavior:'smooth'})" id="explore">Descoperă instrumentele →</button>
+</div>
+<h2 id="toolsTitle">Explorează instrumentele AI</h2>
+<input id="search" class="search" placeholder="🔎 Caută un instrument..." oninput="render()">
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+</section>
+<section id="workspace" class="workspace">
+<button class="btn" onclick="home()" id="back">← Înapoi</button>
+<h2 id="toolTitle"></h2>
+<p class="muted" id="toolDesc"></p>
+<textarea id="userInput" placeholder="Scrie aici ce ai nevoie..."></textarea>
+<button class="primary" onclick="generate()" id="generateBtn">Generează rezultatul →</button>
+<h3 id="resultTitle">Rezultatul tău</h3>
+<div class="output" id="output">Rezultatul va apărea aici.</div>
+<button class="btn" onclick="copyOutput()" id="copyBtn">📋 Copiază rezultatul</button>
+<p class="muted" id="notice">Versiune demonstrativă. Conectarea unui serviciu AI va activa generarea inteligentă reală.</p>
+</section>
+<footer>© 2026 ELVORAQ AI · Your ideas, powered by intelligence.</footer>
+</main>
+<script>
+const data=[
+["text","✍️","AI Text Generator","Scrie articole, descrieri și texte creative.","Writing"],
+["caption","📱","Social Media Captions","Creează postări atractive pentru social media.","Social"],
+["business","💡","Business Ideas","Descoperă idei noi pentru afacerea ta.","Business"],
+["cv","📄","CV & Cover Letter","Pregătește CV-uri și scrisori profesionale.","Writing"],
+["prompt","🎨","AI Prompt Generator","Construiește prompturi pentru instrumente AI.","Creative"],
+["translate","🌍","Translator & Rewriter","Tradu și reformulează texte.","Writing"],
+["study","📚","Study Assistant","Învață mai ușor cu planuri și explicații.","Study"],
+["email","✉️","Email Writer","Compune emailuri profesionale.","Writing"],
+["video","🎬","Video Ideas Generator","Idei pentru TikTok și YouTube.","Social"],
+["brand","🚀","Brand Name Generator","Găsește numele potrivit pentru brand.","Business"],
+["product","🛍️","Product Description","Descrieri atractive pentru produse.","Business"],
+["bio","👤","Bio Generator","Creează o descriere de profil memorabilă.","Social"],
+["story","📖","Story Generator","Dezvoltă idei de povești creative.","Creative"],
+["plan","📅","Daily Planner","Organizează-ți ziua și prioritățile.","Productivity"],
+["interview","🎤","Interview Coach","Pregătește-te pentru interviuri.","Productivity"],
+["recipe","🥗","Recipe Ideas","Descoperă idei de rețete.","Productivity"],
+["hashtags","#️⃣","Hashtag Generator","Hashtaguri pentru postările tale.","Social"],
+["slogan","✨","Slogan Generator","Sloganuri pentru afacerea ta.","Business"]
+];
+let lang="ro",category="All",selected=null;
+const categories=["All","Writing","Social","Business","Creative","Study","Productivity"];
+const translations={
+ro:{hero:"Ideile tale.<br><span class='gradient'>Puterea AI.</span>",desc:"Toate instrumentele de inteligență artificială de care ai nevoie, într-un singur loc. Creează, învață și dezvoltă-ți afacerea cu ELVORAQ AI.",explore:"Descoperă instrumentele →",title:"Explorează instrumentele AI",search:"🔎 Caută un instrument...",back:"← Înapoi",generate:"Generează rezultatul →",result:"Rezultatul tău",copy:"📋 Copiază rezultatul",notice:"Versiune demonstrativă. Conectarea unui serviciu AI va activa generarea inteligentă reală.",placeholder:"Scrie aici ce ai nevoie...",empty:"Rezultatul va apărea aici.",open:"Deschide instrumentul →"},
+en:{hero:"Your ideas.<br><span class='gradient'>Powered by AI.</span>",desc:"All the artificial intelligence tools you need in one place. Create, learn and grow your business with ELVORAQ AI.",explore:"Explore AI tools →",title:"Explore AI tools",search:"🔎 Search for a tool...",back:"← Back",generate:"Generate result →",result:"Your result",copy:"📋 Copy result",notice:"Demo version. Connect an AI service to enable real intelligent generation.",placeholder:"Write what you need here...",empty:"Your result will appear here.",open:"Open tool →"}
+};
+function render(){
+const q=document.getElementById("search").value.toLowerCase();
+document.getElementById("filters").innerHTML=categories.map(c=>`<button class="filter ${category===c?'active':''}" onclick="setCategory('${c}')">${c==="All"?(lang==="ro"?"Toate":"All"):c}</button>`).join("");
+document.getElementById("grid").innerHTML=data.filter(t=>(category==="All"||t[4]===category)&&(t[2].toLowerCase().includes(q)||t[3].toLowerCase().includes(q))).map(t=>`<div class="card" onclick="openTool('${t[0]}')"><div class="ico">${t[1]}</div><h3>${t[2]}</h3><p>${t[3]}</p><span class="open">${translations[lang].open}</span></div>`).join("");
+}
+function setCategory(c){category=c;render()}
+function home(){document.getElementById("dashboard").style.display="block";document.getElementById("workspace").classList.remove("show");}
+function openTool(id){
+selected=data.find(t=>t[0]===id);
+document.getElementById("dashboard").style.display="none";
+document.getElementById("workspace").classList.add("show");
+document.getElementById("toolTitle").textContent=selected[1]+" "+selected[2];
+document.getElementById("toolDesc").textContent=selected[3];
+document.getElementById("userInput").placeholder=translations[lang].placeholder;
+document.getElementById("output").textContent=translations[lang].empty;
+}
+function generate(){
+const v=document.getElementById("userInput").value.trim();
+if(!v){alert(lang==="ro"?"Scrie câteva detalii mai întâi!":"Please enter some details first!");return}
+const names={
+text:`${v}\n\nIntroducere: Acest subiect merită explorat și înțeles.\nIdeea principală: prezintă informațiile clar, cu exemple și beneficii.\nConcluzie: transformă această idee într-un mesaj memorabil.`,
+caption:`${v} ✨\n\nIdeile bune merită împărtășite! 🚀\n\n#inspiration #creative #elvoraqai`,
+business:`Idei pentru domeniul ${v}:\n\n1. Un serviciu digital specializat.\n2. O platformă online cu abonament.\n3. Un magazin de produse digitale.\n\nAnalizează cererea și concurența înainte de lansare.`,
+cv:`PROFIL PROFESIONAL\n\n${v}\n\nEXPERIENȚĂ ȘI ABILITĂȚI\nAdaugă aici realizările și competențele relevante.\n\nOBIECTIV\nContribuie la o echipă prin experiență și dorință de dezvoltare.`,
+prompt:`Create a professional high-quality result about: ${v}.\nStyle: premium, cinematic, detailed.\nComposition: balanced and visually striking.`,
+translate:`Textul tău:\n${v}\n\nPentru traducere automată reală, va trebui conectat un model AI.`,
+study:`PLAN DE ÎNVĂȚARE: ${v}\n\n1. Înțelege conceptele de bază.\n2. Studiază exemple practice.\n3. Notează ideile importante.\n4. Testează-ți cunoștințele.\n5. Revizuiește informațiile.`,
+email:`Subiect: ${v}\n\nBună ziua,\n\nVă contactez în legătură cu ${v}.\n\nAș aprecia oportunitatea de a discuta mai multe detalii.\n\nVă mulțumesc pentru timpul acordat!\n\nCu stimă,\n[Numele tău]`,
+video:`IDEI VIDEO: ${v}\n\n1. 5 lucruri pe care trebuie să le știi.\n2. Greșeli frecvente și cum să le eviți.\n3. Ghid complet pentru începători.\n4. Mituri versus realitate.\n5. Experiența mea.`,
+brand:`Idei de nume pentru ${v}:\n\n1. NovaFlow\n2. Elvoraq Studio\n3. ElevateX\n4. Lumora\n5. Vortex Labs\n\nVerifică disponibilitatea numelui înainte de utilizare.`,
+product:`${v}\n\nDescoperă un produs creat pentru a-ți simplifica experiența.\n\n✔ Design atent gândit.\n✔ Soluție practică.\n✔ Potrivit pentru utilizarea de zi cu zi.`,
+bio:`✨ ${v}\n🚀 Always creating & improving\n💡 Turning ideas into reality\n📩 Let's connect!`,
+story:`Poveste: ${v}\n\nÎntr-o zi, un personaj a pornit într-o aventură neașteptată. A descoperit provocări, prieteni noi și o perspectivă diferită asupra lumii.`,
+plan:`PLANUL TĂU\n\n1. Dimineața: ${v}\n2. Prioritate principală: finalizează cea mai importantă sarcină.\n3. Pauză: rezervă timp pentru odihnă.\n4. Seara: verifică progresul și pregătește ziua următoare.`,
+interview:`PREGĂTIRE INTERVIU: ${v}\n\n1. Povestește-mi despre tine.\n2. Care sunt punctele tale forte?\n3. Cum gestionezi provocările?\n4. De ce îți dorești acest rol?\n\nPregătește răspunsuri bazate pe experiențe reale.`,
+recipe:`IDEI DE REȚETE: ${v}\n\n1. Bol nutritiv cu ingrediente proaspete.\n2. Rețetă rapidă la tigaie.\n3. Salată creativă cu dressing special.\n\nVerifică ingredientele și eventualele alergii.`,
+hashtags:`Hashtaguri pentru ${v}:\n\n#${v.replace(/\s+/g,"")} #creative #inspiration #trending #explore #elvoraqai`,
+slogan:`Sloganuri pentru ${v}:\n\n1. Ideile devin realitate.\n2. Viitorul începe aici.\n3. Mai mult decât o idee.\n4. Inspiră. Creează. Evoluează.`
+};
+const enNames={
+text:`${v}\n\nIntroduction: This topic deserves attention.\nMain idea: present information clearly, with practical examples and benefits.\nConclusion: turn this idea into a memorable message.`,
+caption:`${v} ✨\n\nGreat ideas deserve to be shared! 🚀\n\n#inspiration #creative #elvoraqai`,
+business:`Ideas for ${v}:\n\n1. A specialized digital service.\n2. A subscription-based online platform.\n3. A digital products store.\n\nResearch demand and competition before launching.`,
+prompt:`Create a premium, high-quality result about: ${v}.\nStyle: cinematic and detailed.\nComposition: balanced and visually striking.`,
+translate:`Your text:\n${v}\n\nConnect an AI model for real automatic translation.`,
+email:`Subject: ${v}\n\nHello,\n\nI am contacting you regarding ${v}.\n\nI would appreciate the opportunity to discuss this further.\n\nThank you for your time!\n\nBest regards,\n[Your Name]`,
+video:`VIDEO IDEAS: ${v}\n\n1. 5 things you should know.\n2. Common mistakes and how to avoid them.\n3. A complete beginner's guide.\n4. Myths versus facts.\n5. My experience.`,
+brand:`Brand name ideas for ${v}:\n\n1. NovaFlow\n2. Elvoraq Studio\n3. ElevateX\n4. Lumora\n5. Vortex Labs`,
+bio:`✨ ${v}\n🚀 Always creating & improving\n💡 Turning ideas into reality\n📩 Let's connect!`
+};
+let result=names[selected[0]]||`${selected[2]}: ${v}\n\n1. Define your goal.\n2. Break it into practical steps.\n3. Review and improve your result.`;
+if(lang==="en")result=enNames[selected[0]]||result;
+document.getElementById("output").textContent=result+(lang==="ro"?"\n\n— Rezultat demonstrativ. Pentru răspunsuri AI personalizate vom conecta un model AI.":"\n\n— Demo result. Connect an AI model for personalized AI responses.");
+}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById("output").textContent).then(()=>alert(lang==="ro"?"Copiat!":"Copied!")).catch(()=>alert("Selectează textul și copiază-l."))}
+function toggleLanguage(){
+lang=lang==="ro"?"en":"ro";
+document.getElementById("lang").textContent=lang.toUpperCase();
+let t=translations[lang];
+document.getElementById("heroTitle").innerHTML=t.hero;
+document.getElementById("heroText").textContent=t.desc;
+document.getElementById("explore").textContent=t.explore;
+document.getElementById("toolsTitle").textContent=t.title;
+document.getElementById("search").placeholder=t.search;
+document.getElementById("back").textContent=t.back;
+document.getElementById("generateBtn").textContent=t.generate;
+document.getElementById("resultTitle").textContent=t.result;
+document.getElementById("copyBtn").textContent=t.copy;
+document.getElementById("notice").textContent=t.notice;
+render();
+if(selected)openTool(selected[0]);
+}
+render();
+</script>
+</body>
+</html>
