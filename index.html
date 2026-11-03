@@ -71,7 +71,7 @@ button,textarea{font:inherit}button{cursor:pointer}
 </div></div><div class="messages" id="messages"></div></section>
 <div class="composer-wrap"><div class="composer"><textarea id="prompt" rows="1" placeholder="Trimite un mesaj" aria-label="Mesaj"></textarea><div class="composer-bottom"><span class="hint">Enter pentru trimitere · Shift + Enter pentru rând nou</span><button class="send" id="send" aria-label="Trimite">↑</button></div></div><div class="disclaimer">ELVORAQ AI poate face greșeli. Verifică informațiile importante.</div></div>
 </main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabaseClient/supabaseClient-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);let chats=[];let activeId=null;let busy=false;let supabaseClient=null;let currentUser=null;let cloudReady=false;
 try{chats=JSON.parse(localStorage.getItem('elvoraq_chats')||'[]')}catch{chats=[]}
