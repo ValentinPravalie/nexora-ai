@@ -75,7 +75,7 @@ export default async function handler(req, res) {
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
     const needsWeb = /\b(azi|astăzi|acum|actual|actualizat|ultim[ae]|recent|nout[aă][tț]i|știri|vremea|prognoz[aă]|pre[tț]uri|curs valutar|rezultate live|disponibilitate|program actual)\b/i.test(lastUserMessage) || /\b(caut[aă] pe internet|verific[aă] online|surse actuale|linkuri oficiale)\b/i.test(lastUserMessage);
     const complexTask = lastUserMessage.length > 700 || /\b(analiz[aă] aprofundat[aă]|compar[aă] detaliat|arhitectur[aă]|debug|eroare|strategie|plan detaliat|proiect complet|cod complet|securitate|demonstra[tț]ie|cercetare|pas cu pas)\b/i.test(lastUserMessage);
-    const tools = needsWeb ? [{ type: "web_search" }] : [];
+    const tools = [{ type: "web_search" }];
     if (wantsImage) tools.push({ type: "image_generation", model: "gpt-image-2.5-flare" });
 
     const memory = typeof req.body?.memory === "string" ? req.body.memory.trim().slice(0, 2000) : "";
@@ -97,14 +97,40 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-6-astra",
-        reasoning: { effort: voiceMode ? "low" : (complexTask ? "high" : "medium") },
+        model: complexTask ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra"),
+        reasoning: { effort: voiceMode ? "low" : (complexTask ? "high" : "low") },
         instructions,
         input,
         tools,
-        max_output_tokens: voiceMode ? 450 : 4000
+        max_output_tokens: voiceMode ? 450 : 4000,
+        stream: req.body?.stream === true && !wantsImage
       })
     });
+
+    if (req.body?.stream === true && !wantsImage) {
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json().catch(() => ({}));
+        console.error("OpenAI streaming error:", errorData);
+        return res.status(apiResponse.status >= 500 ? 502 : 400).json({
+          error: errorData.error?.message || "Serviciul AI nu a putut procesa cererea."
+        });
+      }
+      res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+      res.setHeader("Cache-Control", "no-cache, no-transform");
+      res.setHeader("Connection", "keep-alive");
+      res.setHeader("X-Accel-Buffering", "no");
+      const reader = apiResponse.body.getReader();
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          res.write(Buffer.from(value));
+        }
+      } finally {
+        res.end();
+      }
+      return;
+    }
 
     const data = await apiResponse.json();
     if (!apiResponse.ok) {
