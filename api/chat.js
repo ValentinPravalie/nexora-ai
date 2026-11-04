@@ -71,6 +71,8 @@ export default async function handler(req, res) {
     }
 
     const voiceMode = req.body?.voice === true;
+    const allowedModes = ["rapid", "expert", "coding", "research"];
+    const mode = allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid";
     const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
     const needsWeb = /\b(azi|astăzi|acum|actual|actualizat|ultim[ae]|recent|nout[aă][tț]i|știri|vremea|prognoz[aă]|pre[tț]uri|curs valutar|rezultate live|disponibilitate|program actual)\b/i.test(lastUserMessage) || /\b(caut[aă] pe internet|verific[aă] online|surse actuale|linkuri oficiale)\b/i.test(lastUserMessage);
@@ -86,9 +88,16 @@ export default async function handler(req, res) {
       sarcastic: "Ton ironic și jucăuș, dar respectuos, fără jigniri."
     };
     const personality = personalityRules[req.body?.personality] || personalityRules.friendly;
+    const modeRules = {
+      rapid: "MOD RAPID: răspunde direct, concis și practic. Evită detaliile inutile; verifică totuși corectitudinea.",
+      expert: "MOD EXPERT: analizează problema în profunzime, explică raționamentul relevant, evidențiază limitele și oferă un răspuns structurat și precis.",
+      coding: "MOD CODING: comportă-te ca un inginer software senior. Analizează cerințele, identifică erorile și cazurile-limită, oferă cod complet și sigur, indică fișierele și pașii de integrare. Nu pretinde că ai rulat teste.",
+      research: "MOD RESEARCH: tratează cererea ca pe o cercetare. Folosește căutarea web când este relevantă, prioritizează sursele primare și recente, citează sursele disponibile și separă faptele de incertitudini."
+    };
+    const modeRule = modeRules[mode];
     const instructions = (voiceMode
       ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Fără liste sau titluri."
-      : SYSTEM_PROMPT) + "\n\nPERSONALITATE SELECTATĂ: " + personality + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
+      : SYSTEM_PROMPT) + "\n\nMOD SELECTAT: " + modeRule + "\n\nPERSONALITATE SELECTATĂ: " + personality + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
 
     const apiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
