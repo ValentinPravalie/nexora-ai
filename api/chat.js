@@ -106,8 +106,8 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: complexTask ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra"),
-        reasoning: { effort: voiceMode ? "low" : (complexTask ? "high" : "low") },
+        model: (complexTask || mode !== "rapid") ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra"),
+        reasoning: { effort: voiceMode || mode === "rapid" ? "low" : "high" },
         instructions,
         input,
         tools,
