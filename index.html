@@ -257,6 +257,151 @@ body{background:#080a12;color:var(--text)}
 .send{background:linear-gradient(135deg,#c9b7ff,#8b5cf6 65%,#6c8ff0);color:#100d20}
 @media(max-width:700px){.sidebar{box-shadow:20px 0 70px #000b}.topbar{height:58px;flex-basis:58px}.welcome{margin:clamp(55px,12vh,115px) auto 0}.welcome h1{font-size:clamp(34px,9vw,45px)}.orb{width:68px;height:68px}.orb svg{width:62px;height:62px}}
 
+
+/* ELVORAQ — Galaxy concept implementation */
+:root{
+ --bg:#030615;--side:#070b1d;--panel:#0b1230;--line:rgba(126,105,255,.32);
+ --text:#f7f6ff;--muted:#a8afd0;--accent:#8b5cf6;
+}
+html,body{background:#030615}
+.app{
+ background:
+ radial-gradient(ellipse at 75% 18%,rgba(82,43,190,.24),transparent 32%),
+ radial-gradient(ellipse at 54% 88%,rgba(0,107,255,.14),transparent 38%),
+ #030615;
+}
+.sidebar{
+ width:252px;flex-basis:252px;padding:17px 14px;
+ background:linear-gradient(180deg,rgba(8,10,31,.98),rgba(5,8,23,.98));
+ border-right:1px solid rgba(112,91,255,.38);
+ box-shadow:8px 0 38px rgba(18,8,70,.22);
+}
+.brand{height:68px;padding:0 8px 14px;font-size:16px;letter-spacing:.6px}
+.brandmark{width:43px;height:43px;border-radius:15px;background:radial-gradient(circle at 35% 25%,#34216b,#0a1230 72%);border:1px solid #9c79ff88;box-shadow:0 0 24px #7b35ff55}
+.brandmark svg{width:42px;height:42px;filter:drop-shadow(0 0 8px #9a5cff)}
+.newchat{
+ border:1px solid #8b5cf6aa;
+ background:linear-gradient(105deg,#741cff,#176de9);
+ border-radius:12px;padding:12px 13px;color:#fff;
+ box-shadow:0 5px 24px #4d27d955;font-weight:700
+}
+.newchat:hover{background:linear-gradient(105deg,#8b36ff,#2786ff)}
+.side-label{margin:23px 10px 8px;color:#7785bd;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.history button{color:#d8ddfa;border-radius:10px}
+.history button:hover{background:#21164a}
+.history-search{background:#0b1028;border-color:#55418d}
+.archive-toggle{color:#a6add1}
+.account{border-top:1px solid #51408066}
+.account-toggle{background:linear-gradient(120deg,#191532,#101a35)!important;border-color:#8b5cf655!important}
+.account-avatar{background:linear-gradient(135deg,#b9a1ff,#159dff);box-shadow:0 0 16px #743cff66}
+.account-panel input{background:#080e25!important;border-color:#55458b!important}
+.google-auth{background:linear-gradient(100deg,#7b1cff,#086ff1)!important;color:#fff!important;border:0!important;box-shadow:0 5px 22px #5423bf55}
+.google-g{background:none!important;color:white!important}
+.auth-divider{color:#8d98c4}
+.auth-divider:before,.auth-divider:after{background:#51427b}
+.account-actions #signIn{background:linear-gradient(110deg,#7928ed,#176ee8)!important}
+.account-actions #signUp{background:#151733!important;border-color:#6651a2!important}
+.side-bottom{color:#c8c9ed}
+.side-bottom span{color:#7885b8}
+.main{background:transparent}
+.topbar{
+ height:62px;flex-basis:62px;padding:0 25px;
+ background:rgba(3,6,21,.72);border-bottom:1px solid #6350b52e;
+ backdrop-filter:blur(20px)
+}
+.model{font-weight:800;letter-spacing:.7px}
+.status{color:#93a3d4}
+.mobile-menu{border-radius:11px;background:#16133a;border:1px solid #8061d655}
+.chat-scroll{
+ position:relative;
+ background-image:
+ radial-gradient(1px 1px at 12% 16%,#c9c0ff88 50%,transparent 100%),
+ radial-gradient(1px 1px at 82% 24%,#71caff88 50%,transparent 100%),
+ radial-gradient(1px 1px at 68% 73%,#b69aff88 50%,transparent 100%),
+ radial-gradient(1px 1px at 30% 82%,#6e8cff88 50%,transparent 100%);
+}
+.welcome{
+ position:relative;isolation:isolate;
+ max-width:850px;margin:clamp(48px,10vh,112px) auto 0;
+ padding:28px 22px 38px;
+}
+.welcome:before{
+ content:"";position:absolute;z-index:-1;left:50%;top:5px;
+ width:min(78vw,620px);height:370px;transform:translateX(-50%);
+ background:radial-gradient(ellipse,rgba(70,35,174,.22),rgba(27,65,160,.10) 40%,transparent 72%);
+ filter:blur(15px);pointer-events:none
+}
+.orb{
+ width:100px;height:100px;border-radius:32px;margin-bottom:27px;
+ background:radial-gradient(circle at 32% 24%,#372078,#0b1538 72%);
+ border:1px solid #a17aff99;
+ box-shadow:0 0 25px #792bff66,0 0 75px #2855ff33,inset 0 0 24px #7a4cff33;
+}
+.orb svg{width:88px;height:88px;filter:drop-shadow(0 0 12px #9a5cff)}
+.welcome h1{
+ font-size:clamp(36px,5vw,56px);letter-spacing:-1.8px;
+ background:linear-gradient(95deg,#fff 18%,#d8c5ff 57%,#5bd9ff);
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+ text-shadow:0 0 32px #7040c522
+}
+.welcome p{max-width:580px;color:#c0c7e6;font-size:15px;line-height:1.75}
+.welcome-caption{color:#8e9bc5;margin-top:27px}
+.suggestions{
+ max-width:760px;gap:12px;
+}
+.suggestion{
+ min-height:82px;border-radius:16px;padding:17px 18px;
+ background:linear-gradient(145deg,rgba(17,20,54,.95),rgba(8,18,44,.94));
+ border:1px solid rgba(120,104,255,.32);
+ box-shadow:0 9px 28px #0005,inset 0 1px #ffffff0a
+}
+.suggestion:hover{
+ background:linear-gradient(145deg,rgba(43,24,91,.96),rgba(9,34,67,.96));
+ border-color:#a17aff;transform:translateY(-2px);
+ box-shadow:0 10px 30px #4d20a633
+}
+.suggestion b{color:#f6f1ff;font-size:14px}
+.suggestion span{color:#a9b6dc}
+.messages{max-width:830px}
+.message.user .bubble{
+ background:linear-gradient(120deg,#251653,#102d55);
+ border:1px solid #8a66ff55;
+ box-shadow:0 5px 22px #0003
+}
+.avatar{background:linear-gradient(135deg,#bca0ff,#3b8dff);color:#080d24}
+.message.user .avatar{background:#1b2b52;color:#c9dcff}
+.bubble pre{background:#050a1c;border-color:#4a3c82}
+.composer-wrap{
+ background:linear-gradient(180deg,transparent,rgba(3,6,21,.98) 24%);
+ padding-top:15px
+}
+.composer{
+ max-width:850px;border-radius:23px;
+ background:rgba(10,16,42,.96);
+ border:1px solid #8264e977;
+ box-shadow:0 12px 48px #0008,0 0 28px #5d31d522,inset 0 1px #ffffff12
+}
+.composer:focus-within{border-color:#b09aff;box-shadow:0 0 0 3px #8b5cf622,0 12px 48px #0008}
+.composer textarea{color:#fff}
+.composer textarea::placeholder{color:#8794bd}
+.voice-btn{background:#17143a;border-color:#6651a5;color:#e6ddff}
+.voice-btn:hover,.voice-btn.active{background:#33206a;border-color:#b69aff}
+.send{background:linear-gradient(135deg,#a72dff,#286dff);color:white;border-radius:14px;box-shadow:0 4px 18px #632dff77}
+.send:hover{background:linear-gradient(135deg,#bd50ff,#4289ff)}
+.hint,.disclaimer{color:#8995bc}
+.memory-panel{background:#0d1230;border-color:#8062d977}
+@media(max-width:700px){
+ .sidebar{background:#070b20;border-right-color:#6f51bb88}
+ .topbar{background:#06091cbf}
+ .welcome{margin:clamp(28px,7vh,65px) auto 0;padding:18px 8px 25px}
+ .orb{width:78px;height:78px;border-radius:25px}
+ .orb svg{width:70px;height:70px}
+ .welcome h1{font-size:clamp(32px,8.5vw,44px)}
+ .suggestions{grid-template-columns:1fr}
+ .suggestion{min-height:68px}
+ .composer{border-radius:19px}
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><span class="brandmark"><svg viewBox="0 0 64 64" role="img" aria-label="ELVORAQ AI" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="elvLogo" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#e9ddff"/><stop offset=".42" stop-color="#9b5cff"/><stop offset="1" stop-color="#31c8ff"/></linearGradient><linearGradient id="elvOrbit" x1="4" y1="32" x2="60" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd36e"/><stop offset=".5" stop-color="#fff2b0"/><stop offset="1" stop-color="#ff9e35"/></linearGradient></defs><path d="M13 48 29 12c1.2-2.7 5-2.7 6.2 0L51 48h-12L32 29l-7 19H13Z" fill="url(#elvLogo)"/><path d="M5 43C17 57 48 55 59 35" fill="none" stroke="url(#elvOrbit)" stroke-width="3.2" stroke-linecap="round"/><circle cx="52" cy="14" r="3" fill="#ffe39a"/></svg></span><span>ELVORAQ <i>AI</i></span></div>
