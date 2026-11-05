@@ -39,3 +39,17 @@ test("transcription accepts browser audio containers with codec parameters", asy
   assert.match(source, /rawMime\.split\(";"\)\[0\]/);
   assert.match(source, /"audio\/webm", "audio\/ogg"/);
 });
+
+test("chat API exposes a dedicated Code Engineer mode", async () => {
+  const source = await read("api/chat.js");
+  assert.match(source, /"code-engineer"/);
+  assert.match(source, /MOD CODE ENGINEER/);
+});
+test("workspace and memory controls are available in the website UI", async () => {
+  const html = await read("index.html");
+  const app = await read("app.js");
+  assert.match(html, /id="workspaceSelect"/);
+  assert.match(html, /id="workspaceAdd"/);
+  assert.match(app, /elvoraq_chat_workspaces_/);
+  assert.match(app, /elvoraq_memory_/);
+});
