@@ -34,4 +34,8 @@ test("realtime voice uses a short-lived token endpoint", async () => {
   assert.match(endpoint, /authenticateRequest/);
 });
 
-test("transcription accepts browser audio containers with codec parameters", async () => {\n  const source = await read("api/transcribe.js");\n  assert.match(source, /rawMime\.split\(";"\)\[0\]/);\n  assert.match(source, /"audio\/webm", "audio\/ogg"/);\n});\n
+test("transcription accepts browser audio containers with codec parameters", async () => {
+  const source = await read("api/transcribe.js");
+  assert.match(source, /rawMime\.split\(";"\)\[0\]/);
+  assert.match(source, /"audio\/webm", "audio\/ogg"/);
+});
