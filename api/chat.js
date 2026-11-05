@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     }
 
     const voiceMode = req.body?.voice === true;
-    const allowedModes = ["rapid", "expert", "coding", "research"];
+    const allowedModes = ["rapid", "expert", "coding", "code-engineer", "research"];
     const mode = allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid";
     const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
@@ -92,6 +92,7 @@ export default async function handler(req, res) {
       rapid: "MOD RAPID: răspunde direct, concis și practic. Evită detaliile inutile; verifică totuși corectitudinea.",
       expert: "MOD EXPERT: analizează problema în profunzime, explică raționamentul relevant, evidențiază limitele și oferă un răspuns structurat și precis.",
       coding: "MOD CODING: comportă-te ca un inginer software senior. Analizează cerințele, identifică erorile și cazurile-limită, oferă cod complet și sigur, indică fișierele și pașii de integrare. Nu pretinde că ai rulat teste.",
+      "code-engineer": "MOD CODE ENGINEER: acționează ca un inginer software senior responsabil de livrarea unei soluții. Clarifică arhitectura și cerințele, inspectează atent codul furnizat, identifică bug-uri și riscuri de securitate, propune modificări complete pe fișiere, explică comenzile de testare și criteriile de acceptare. Preferă schimbări mici, compatibile și ușor de verificat; nu inventa rezultate de test și nu afirma că ai modificat un repository fără acces.",
       research: "MOD RESEARCH: tratează cererea ca pe o cercetare. Folosește căutarea web când este relevantă, prioritizează sursele primare și recente, citează sursele disponibile și separă faptele de incertitudini."
     };
     const modeRule = modeRules[mode];
