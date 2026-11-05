@@ -14,10 +14,11 @@ export default async function handler(req, res) {
     if (!/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64)) return res.status(400).json({ error: "Înregistrarea audio nu are un format valid." });
     const buffer = Buffer.from(audioBase64, "base64");
     if (!buffer.length) return res.status(400).json({ error: "Nu am primit sunet de la microfon." });
-    const allowedMime = ["audio/mp4", "audio/m4a", "audio/webm", "audio/webm;codecs=opus", "audio/mpeg", "audio/wav", "audio/x-wav"];
-    if (typeof mimeType !== "string" || !allowedMime.includes(mimeType.toLowerCase())) return res.status(400).json({ error: "Formatul înregistrării audio nu este acceptat." });
-    const safeMime = mimeType.toLowerCase();
-    const ext = safeMime.includes("webm") ? "webm" : safeMime.includes("mpeg") ? "mp3" : safeMime.includes("wav") ? "wav" : "m4a";
+    const rawMime = typeof mimeType === "string" ? mimeType.trim().toLowerCase() : "";
+    const safeMime = rawMime.split(";")[0].trim();
+    const allowedMime = ["audio/mp4", "audio/m4a", "audio/webm", "audio/ogg", "audio/mpeg", "audio/wav", "audio/x-wav"];
+    if (!allowedMime.includes(safeMime)) return res.status(400).json({ error: "Formatul înregistrării audio nu este acceptat. Încearcă din nou din Chrome sau Edge." });
+    const ext = safeMime === "audio/webm" ? "webm" : safeMime === "audio/ogg" ? "ogg" : safeMime === "audio/mpeg" ? "mp3" : safeMime.includes("wav") ? "wav" : "m4a";
     const form = new FormData();
     form.append("file", new Blob([buffer], { type: safeMime }), "recording." + ext);
     form.append("model", "gpt-4o-mini-transcribe");
