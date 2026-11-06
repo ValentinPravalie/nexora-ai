@@ -14,9 +14,8 @@ revoke all on table private.elvoraq_admin_allowlist from public, anon, authentic
 alter table private.elvoraq_admin_allowlist enable row level security;
 alter table private.elvoraq_admin_allowlist no force row level security;
 
-insert into private.elvoraq_admin_allowlist(email)
-values ('brbvaly@gmail.com')
-on conflict (email) do nothing;
+-- Adaugă manual e-mailul administratorului în Supabase SQL Editor, fără să îl publici în repository:
+-- insert into private.elvoraq_admin_allowlist(email) values (lower('ADRESA_TA_DE_EMAIL')) on conflict (email) do nothing;
 
 create table if not exists private.elvoraq_admin_audit (
   id bigint generated always as identity primary key,
