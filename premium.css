@@ -169,3 +169,74 @@ body{
 @media(max-width:700px){.welcome{margin:clamp(28px,7vh,60px) auto 0}.nexus-kicker{margin-bottom:15px}.nexus-orb{width:67px;height:67px;border-radius:22px}.welcome h1{font-size:clamp(36px,9vw,48px);letter-spacing:-2px}.nexus-intro{font-size:12px!important;margin-bottom:23px!important}.nexus-grid{gap:8px}.nexus-card{grid-template-columns:34px 1fr 14px;gap:2px 9px;min-height:88px;padding:12px 10px;border-radius:13px}.nexus-card-icon{width:34px;height:34px;border-radius:11px;font-size:19px}.nexus-card-copy b{font-size:10px}.nexus-card-copy small{font-size:9px}.nexus-card-index{font-size:6px}.nexus-footnote{font-size:7px;letter-spacing:.3px;line-height:1.5;text-align:center}.nexus-section-head{font-size:7px}}
 @media(max-width:360px){.nexus-grid{grid-template-columns:1fr}.nexus-card{min-height:75px}.nexus-card-index{font-size:7px}}
 @media(prefers-reduced-motion:no-preference){.nexus-orb:before{animation:nexusOrbit 18s linear infinite}.nexus-orb:after{animation:nexusOrbit 24s linear infinite reverse}.nexus-pulse{animation:nexusPulse 2.8s ease-in-out infinite}@keyframes nexusOrbit{to{rotate:360deg}}@keyframes nexusPulse{50%{opacity:.45;box-shadow:0 0 4px #7ce6d0}}}
+
+/* ELVORAQ — complete editorial interface redesign */
+:root{color-scheme:dark;--bg:#0b0c10;--side:#111319;--panel:#151820;--line:rgba(255,255,255,.1);--text:#f5f1eb;--muted:#9a9ba3;--accent:#f3a36b;--accent-ink:#17100d}
+html,body,.app{background:#0b0c10;color:#f5f1eb}
+.sidebar{position:absolute;z-index:20;inset:0 auto 0 0;width:min(290px,86vw);flex-basis:min(290px,86vw);background:rgba(16,18,25,.98);border-right:1px solid rgba(255,255,255,.1);box-shadow:22px 0 80px rgba(0,0,0,.35);transform:translateX(-110%);transition:transform .28s cubic-bezier(.2,.8,.2,1);backdrop-filter:blur(24px)}
+.sidebar.open{transform:translateX(0)}
+.main{background:radial-gradient(ellipse at 50% 28%,rgba(111,68,48,.18),transparent 34%),radial-gradient(ellipse at 50% 100%,rgba(49,54,72,.13),transparent 45%),#0b0c10}
+.topbar{height:68px;flex:0 0 68px;padding:0 clamp(18px,4vw,54px);background:rgba(11,12,16,.76);border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(22px)}
+.topbar-brand{display:flex;align-items:center;gap:12px}
+.topbar-mark{width:29px;height:29px;display:grid;place-items:center;border:1px solid rgba(243,163,107,.5);border-radius:10px;color:#ffc18f;font-family:Georgia,serif;font-size:18px;font-weight:700;box-shadow:0 0 25px rgba(243,163,107,.1)}
+.model{font-size:11px;letter-spacing:2.2px;color:#f6f1e9}.model span{color:#888995!important;font-size:9px;letter-spacing:1.5px}
+.status{color:#888995;font-size:10px;letter-spacing:.4px}
+.mobile-menu{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.035);color:#d9d4cd;font-size:15px}
+.chat-scroll{padding:28px 22px 34px;background:none;mask-image:none}
+.welcome{max-width:790px;margin:clamp(70px,14vh,145px) auto 0;padding:0 15px;text-align:center}
+.welcome-orbit{position:relative;width:116px;height:116px;margin:0 auto 35px;display:grid;place-items:center}
+.orbit-core{position:relative;z-index:2;width:69px;height:69px;display:grid;place-items:center;border:1px solid rgba(255,190,139,.45);border-radius:24px;background:linear-gradient(145deg,rgba(244,164,111,.18),rgba(95,58,50,.12));box-shadow:0 0 55px rgba(239,137,86,.18),inset 0 1px rgba(255,255,255,.18)}
+.orbit-core svg{width:58px;height:58px}
+.orbit-ring{position:absolute;border:1px solid rgba(241,164,119,.2);border-radius:50%;inset:4px;transform:rotate(-25deg) scaleY(.55)}
+.orbit-ring-one{animation:elvoraqTurn 22s linear infinite}
+.orbit-ring-two{inset:0 13px;border-color:rgba(167,175,208,.15);transform:rotate(55deg) scaleY(.55);animation:elvoraqTurn 30s linear infinite reverse}
+.welcome-label{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:19px;color:#c18e70;font-size:9px;font-weight:700;letter-spacing:2.7px}
+.welcome-label span{width:5px;height:5px;border-radius:50%;background:#f2a36e;box-shadow:0 0 12px #f2a36e}
+.welcome h1{margin:0;color:#f5f0e9;font-family:Georgia,"Times New Roman",serif;font-size:clamp(43px,6.3vw,76px);font-weight:400;line-height:1.04;letter-spacing:-2.8px}
+.welcome h1 em{font-weight:400;color:#f2a36e}
+.welcome-copy{max-width:480px;margin:22px auto 0;color:#a4a1a0;font-size:14px;line-height:1.8}
+.welcome-foot{display:flex;align-items:center;justify-content:center;gap:14px;margin:37px auto 0;color:#77767d;font-size:8px;letter-spacing:2px}
+.welcome-foot-line{width:38px;height:1px;background:linear-gradient(90deg,transparent,rgba(241,164,119,.45))}
+.welcome-foot-line:last-child{transform:rotate(180deg)}
+.messages{max-width:790px;gap:27px;padding:38px 0 28px}
+.message{gap:13px;color:#e9e5df;font-size:14px;line-height:1.85}
+.avatar{width:31px;height:31px;flex-basis:31px;border-radius:12px;background:rgba(242,163,110,.14);color:#f3ae7d;box-shadow:none}
+.message.user .avatar{background:#242630;color:#d4d3dd}
+.message.user .bubble{padding:12px 17px;border:1px solid rgba(255,255,255,.1);border-radius:17px 17px 5px 17px;background:#191b22;color:#f4f0ea}
+.message:not(.user) .bubble{color:#e7e4de}
+.composer-wrap{padding:12px 22px max(25px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,rgba(11,12,16,.96) 25%)}
+.composer{max-width:790px;padding:9px 10px 9px 20px;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(24,25,31,.96);box-shadow:0 18px 65px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.055);display:flex;align-items:center;gap:12px}
+.composer:focus-within{border-color:rgba(242,163,110,.55);box-shadow:0 0 0 4px rgba(242,163,110,.07),0 18px 65px rgba(0,0,0,.4)}
+.composer textarea{min-height:47px;max-height:160px;padding:12px 0;color:#f5f1eb;font-size:14px}
+.composer textarea::placeholder{color:#89878a}
+.composer-bottom{padding:0;flex:0 0 auto}
+.hint,.composer-actions select,.composer-actions .voice-btn,.attachment-list,.disclaimer,.memory-panel{display:none!important}
+.composer-actions{gap:0}
+.send{width:43px;height:43px;flex:0 0 43px;border-radius:14px;background:linear-gradient(145deg,#ffc18e,#ed8d60);color:#1a100b;font-size:22px;box-shadow:0 6px 24px rgba(231,133,84,.2)}
+.send:hover{background:#ffd0a7;transform:translateY(-1px)}
+.send:disabled{opacity:.35}
+.typing{margin-left:45px;color:#d39b79;font-size:12px}
+.bubble pre{border-color:rgba(255,255,255,.1);background:#111218}
+.code-copy{border-color:rgba(255,255,255,.14);background:#22232b;color:#f2c09e}
+@keyframes elvoraqTurn{to{rotate:360deg}}
+@media(max-width:700px){
+ .topbar{height:59px;flex-basis:59px;padding:0 14px}
+ .model{font-size:10px;letter-spacing:1.6px}.model span{display:none}
+ .status{font-size:9px}
+ .chat-scroll{padding:14px 14px 20px}
+ .welcome{margin:clamp(55px,13vh,115px) auto 0;padding:0 4px}
+ .welcome-orbit{width:98px;height:98px;margin-bottom:27px}
+ .orbit-core{width:61px;height:61px;border-radius:21px}.orbit-core svg{width:51px;height:51px}
+ .welcome-label{font-size:8px;letter-spacing:1.8px}
+ .welcome h1{font-size:clamp(40px,10vw,58px);letter-spacing:-1.8px}
+ .welcome-copy{max-width:340px;margin-top:17px;font-size:13px}
+ .welcome-foot{margin-top:29px;font-size:7px;letter-spacing:1.2px;gap:9px}
+ .welcome-foot-line{width:20px}
+ .messages{gap:19px;padding:23px 0}
+ .message{font-size:14px;gap:9px}
+ .composer-wrap{padding:8px 12px max(14px,env(safe-area-inset-bottom))}
+ .composer{padding:7px 8px 7px 15px;border-radius:17px;gap:8px}
+ .composer textarea{min-height:45px;max-height:125px;font-size:16px}
+ .send{width:40px;height:40px;flex-basis:40px;border-radius:13px}
+}
+@media(prefers-reduced-motion:reduce){.orbit-ring{animation:none!important}}
