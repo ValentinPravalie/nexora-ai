@@ -109,3 +109,22 @@ test("premium ELVORAQ theme and copyright page are linked", async () => {
   assert.match(terms, /Drepturi de autor/);
   assert.match(sitemap, /https:\/\/elvoraq-ai\.vercel\.app\/terms\.html/);
 });
+
+
+test("guest chat is text-only and has a persistent daily quota", async () => {
+  const [chat, security, quotaSql, app, html] = await Promise.all([
+    read("api/chat.js"), read("lib/security.js"), read("supabase/guest_rate_limits.sql"),
+    read("app.js"), read("index.html")
+  ]);
+  assert.match(chat, /isSameOriginRequest/);
+  assert.match(chat, /consumeGuestDailyMessage/);
+  assert.match(chat, /guest && files\.length > 0/);
+  assert.match(chat, /guest && wantsImage/);
+  assert.match(security, /ELVORAQ_GUEST_SECRET/);
+  assert.match(security, /X-Guest-Remaining/);
+  assert.match(quotaSql, /consume_guest_daily_message/);
+  assert.match(quotaSql, /grant execute .* to anon/i);
+  assert.match(app, /Guest · 10 mesaje \/ zi/);
+  assert.match(app, /return token\?\{Authorization:'Bearer '\+token\}:\{\}/);
+  assert.match(html, /id="status"/);
+});
