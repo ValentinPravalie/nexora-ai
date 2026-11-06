@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 
     const voiceMode = req.body?.voice === true;
     const allowedModes = ["rapid", "expert", "coding", "code-engineer", "research"];
-    const mode = allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid";
+    const mode = guest ? "rapid" : (allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid");
     const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
     if (guest && wantsImage) {
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     }
     const needsWeb = /\b(azi|astăzi|acum|actual|actualizat|ultim[ae]|recent|nout[aă][tț]i|știri|vremea|prognoz[aă]|pre[tț]uri|curs valutar|rezultate live|disponibilitate|program actual)\b/i.test(lastUserMessage) || /\b(caut[aă] pe internet|verific[aă] online|surse actuale|linkuri oficiale)\b/i.test(lastUserMessage);
     const complexTask = lastUserMessage.length > 700 || /\b(analiz[aă] aprofundat[aă]|compar[aă] detaliat|arhitectur[aă]|debug|eroare|strategie|plan detaliat|proiect complet|cod complet|securitate|demonstra[tț]ie|cercetare|pas cu pas)\b/i.test(lastUserMessage);
-    const tools = [{ type: "web_search" }];
+    const tools = guest ? [] : [{ type: "web_search" }];
     if (wantsImage) tools.push({ type: "image_generation", model: "gpt-image-2.5-flare" });
 
     const memory = typeof req.body?.memory === "string" ? req.body.memory.trim().slice(0, 2000) : "";
@@ -126,12 +126,12 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: (complexTask || mode !== "rapid") ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra"),
-        reasoning: { effort: voiceMode || mode === "rapid" ? "low" : "high" },
+        model: guest ? (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra") : ((complexTask || mode !== "rapid") ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra")),
+        reasoning: { effort: guest || voiceMode || mode === "rapid" ? "low" : "high" },
         instructions,
         input,
         tools,
-        max_output_tokens: voiceMode ? 450 : 4000,
+        max_output_tokens: guest ? 1500 : (voiceMode ? 450 : 4000),
         stream: req.body?.stream === true && !wantsImage
       })
     });
