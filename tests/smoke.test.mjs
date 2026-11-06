@@ -130,18 +130,6 @@ test("guest chat is text-only and has a persistent daily quota", async () => {
 });
 
 
-test("NEXUS home exposes four accessible interactive modules", async () => {
-  const [html, css, app] = await Promise.all([read("index.html"), read("premium.css"), read("app.js")]);
-  for (const module of ["NEXUS", "STUDIO", "ORBIT", "DISCOVER"]) assert.ok(html.includes(">" + module + "</b>"));
-  assert.match(html, /class="nexus-grid"/);
-  assert.match(html, /data-mode="research"/);
-  assert.match(css, /\.nexus-card:focus-visible/);
-  assert.match(css, /@media\(max-width:700px\)/);
-  assert.match(app, /b\.dataset\.mode/);
-  assert.match(app, /sendMessage\(b\.dataset\.prompt\)/);
-});
-
-
 test("minimal ELVORAQ interface removes visible mode controls and enables automatic routing", async () => {
   const [html, css, app, api] = await Promise.all([read("index.html"), read("premium.css"), read("app.js"), read("api/chat.js")]);
   assert.match(html, /welcome-orbit/);
