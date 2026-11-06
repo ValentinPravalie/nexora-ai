@@ -91,9 +91,9 @@ test("security configuration keeps private credentials out of public files", asy
 
 test("chat storage enforces owner-only row-level security", async () => {
   const sql = await read("supabase/security.sql");
-  assert.match(sql, /alter table public\\.chats enable row level security/i);
-  assert.match(sql, /alter table public\\.chats force row level security/i);
-  assert.match(sql, /using \\(\\(select auth\\.uid\\(\\)\\) = user_id\\)/i);
-  assert.match(sql, /with check \\(\\(select auth\\.uid\\(\\)\\) = user_id\\)/i);
-  assert.match(sql, /revoke all on table private\\.api_rate_limits from public, anon, authenticated/i);
+  assert.match(sql, /alter table public\.chats enable row level security/i);
+  assert.match(sql, /alter table public\.chats force row level security/i);
+  assert.match(sql, /using \(\(select auth\.uid\(\)\) = user_id\)/i);
+  assert.match(sql, /with check \(\(select auth\.uid\(\)\) = user_id\)/i);
+  assert.match(sql, /revoke all on table private\.api_rate_limits from public, anon, authenticated/i);
 });
