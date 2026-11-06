@@ -45,10 +45,8 @@ begin
     return -1;
   end if;
 
-  if pg_catalog.random() < 0.01 then
-    delete from private.guest_daily_usage
-    where usage_date < current_date - 30;
-  end if;
+  delete from private.guest_daily_usage
+  where usage_date < current_date - 30;
 
   return v_limit - v_count;
 end;
