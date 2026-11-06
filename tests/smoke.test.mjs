@@ -140,3 +140,16 @@ test("NEXUS home exposes four accessible interactive modules", async () => {
   assert.match(app, /b\.dataset\.mode/);
   assert.match(app, /sendMessage\(b\.dataset\.prompt\)/);
 });
+
+
+test("minimal ELVORAQ interface removes visible mode controls and enables automatic routing", async () => {
+  const [html, css, app, api] = await Promise.all([read("index.html"), read("premium.css"), read("app.js"), read("api/chat.js")]);
+  assert.match(html, /welcome-orbit/);
+  assert.match(html, /Orice ai în minte/);
+  assert.match(css, /\.composer-actions select,\.composer-actions \.voice-btn,\.hint/);
+  assert.match(css, /\.sidebar\.open/);
+  assert.match(api, /"auto"/);
+  assert.match(api, /const effectiveMode = mode === "auto" \? autoMode : mode/);
+  assert.match(api, /MOD AUTO/);
+  assert.match(app, /mode:aiMode/);
+});
