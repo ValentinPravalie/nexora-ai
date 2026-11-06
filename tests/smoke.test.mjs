@@ -74,3 +74,26 @@ test("public information and AdSense configuration use the registered domain", a
   assert.ok(ads.includes("google.com, pub-8165826899810634, DIRECT"));
   assert.ok(config.includes("pagead2.googlesyndication.com"));
 });
+
+
+test("security configuration keeps private credentials out of public files", async () => {
+  const [app, html, config, adminSql, ignore] = await Promise.all([
+    read("app.js"), read("index.html"), read("api/config.js"),
+    read("supabase/admin.sql"), read(".gitignore")
+  ]);
+  assert.doesNotMatch(app + html, /OPENAI_API_KEY|service_role|sk-[A-Za-z0-9]{20,}/i);
+  assert.match(config, /SUPABASE_ANON_KEY/);
+  assert.doesNotMatch(config, /SUPABASE_SERVICE_ROLE_KEY|OPENAI_API_KEY/);
+  assert.doesNotMatch(adminSql, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/i);
+  assert.match(ignore, /^\.env$/m);
+  assert.match(ignore, /^\.env\.\*$/m);
+});
+
+test("chat storage enforces owner-only row-level security", async () => {
+  const sql = await read("supabase/security.sql");
+  assert.match(sql, /alter table public\\.chats enable row level security/i);
+  assert.match(sql, /alter table public\\.chats force row level security/i);
+  assert.match(sql, /using \\(\\(select auth\\.uid\\(\\)\\) = user_id\\)/i);
+  assert.match(sql, /with check \\(\\(select auth\\.uid\\(\\)\\) = user_id\\)/i);
+  assert.match(sql, /revoke all on table private\\.api_rate_limits from public, anon, authenticated/i);
+});
