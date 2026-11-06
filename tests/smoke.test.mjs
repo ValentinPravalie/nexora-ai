@@ -60,18 +60,17 @@ test("public information and AdSense configuration use the registered domain", a
     read("index.html"), read("about.html"), read("contact.html"), read("privacy.html"),
     read("robots.txt"), read("sitemap.xml"), read("ads.txt"), read("vercel.json")
   ]);
-  assert.match(html, /href="\\/about\\.html"/);
-  assert.match(html, /href="\\/contact\\.html"/);
-  assert.match(html, /href="\\/privacy\\.html"/);
-  assert.match(about, /Despre ELVORAQ AI/);
-  assert.match(contact, /Contact/);
-  assert.match(privacy, /Politica de confidențialitate/);
-  assert.match(html, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/"/);
-  assert.match(about, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/about\\.html"/);
-  assert.match(contact, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/contact\\.html"/);
-  assert.match(privacy, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/privacy\\.html"/);
-  assert.match(robots, /Sitemap: https:\\/\\/elvoraq-ai\\.vercel\\.app\\/sitemap\\.xml/);
-  assert.match(sitemap, /https:\\/\\/elvoraq-ai\\.vercel\\.app\\//);
-  assert.match(ads, /google\\.com, pub-8165826899810634, DIRECT/);
-  assert.match(config, /pagead\\.googlesyndication\\.com/);
+  assert.ok(html.includes('href="/about.html"'));
+  assert.ok(html.includes('href="/contact.html"'));
+  assert.ok(html.includes('href="/privacy.html"'));
+  assert.ok(about.includes("Despre ELVORAQ AI"));
+  assert.ok(contact.includes("Contact"));
+  assert.ok(privacy.includes("Politica de confidențialitate"));
+  for (const [page, path] of [[html, "/"], [about, "/about.html"], [contact, "/contact.html"], [privacy, "/privacy.html"]]) {
+    assert.ok(page.includes('rel="canonical" href="https://elvoraq-ai.vercel.app' + path + '"'));
+  }
+  assert.ok(robots.includes("Sitemap: https://elvoraq-ai.vercel.app/sitemap.xml"));
+  assert.ok(sitemap.includes("https://elvoraq-ai.vercel.app/"));
+  assert.ok(ads.includes("google.com, pub-8165826899810634, DIRECT"));
+  assert.ok(config.includes("pagead.googlesyndication.com"));
 });
