@@ -33,12 +33,12 @@ begin
     return -1;
   end if;
 
-  insert into private.guest_daily_usage as usage
+  insert into private.guest_daily_usage as g
     (fingerprint_hash, usage_date, message_count)
-  values (p_fingerprint_hash, pg_catalog.current_date, 1)
+  values (p_fingerprint_hash, current_date, 1)
   on conflict (fingerprint_hash, usage_date) do update
-    set message_count = usage.message_count + 1
-    where usage.message_count < v_limit
+    set message_count = g.message_count + 1
+    where g.message_count < v_limit
   returning message_count into v_count;
 
   if not found then
@@ -47,7 +47,7 @@ begin
 
   if pg_catalog.random() < 0.01 then
     delete from private.guest_daily_usage
-    where usage_date < pg_catalog.current_date - 30;
+    where usage_date < current_date - 30;
   end if;
 
   return v_limit - v_count;
