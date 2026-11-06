@@ -53,3 +53,17 @@ test("workspace and memory controls are available in the website UI", async () =
   assert.match(app, /elvoraq_chat_workspaces_/);
   assert.match(app, /elvoraq_memory_/);
 });
+
+
+test("public information and privacy pages are present and linked", async () => {
+  const [html, about, contact, privacy, robots] = await Promise.all([
+    read("index.html"), read("about.html"), read("contact.html"), read("privacy.html"), read("robots.txt")
+  ]);
+  assert.match(html, /href="\/about\.html"/);
+  assert.match(html, /href="\/contact\.html"/);
+  assert.match(html, /href="\/privacy\.html"/);
+  assert.match(about, /Despre ELVORAQ AI/);
+  assert.match(contact, /Contact/);
+  assert.match(privacy, /Politica de confidențialitate/);
+  assert.doesNotMatch(robots, /elvoraq-ai\.vercel\.app/);
+});
