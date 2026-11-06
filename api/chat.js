@@ -1,4 +1,4 @@
-import { applySecurityHeaders, authenticateRequest } from "../lib/security.js";
+import { applySecurityHeaders, authenticateRequest, isSameOriginRequest, consumeGuestDailyMessage } from "../lib/security.js";
 
 export const config = { api: { bodyParser: { sizeLimit: "4.5mb" } } };
 
@@ -10,8 +10,17 @@ export default async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Metodă nepermisă." });
   }
-  const user = await authenticateRequest(req, res, 12);
-  if (!user) return;
+  const hasAuthorization = typeof req.headers.authorization === "string" && req.headers.authorization.length > 0;
+  let user = null;
+  const guest = !hasAuthorization;
+  if (guest) {
+    if (!isSameOriginRequest(req)) {
+      return res.status(403).json({ error: "Originea solicitării nu este permisă." });
+    }
+  } else {
+    user = await authenticateRequest(req, res, 12);
+    if (!user) return;
+  }
 
   if (!process.env.OPENAI_API_KEY) {
     return res.status(503).json({ error: "Cheia AI nu este configurată în Vercel." });
@@ -34,6 +43,9 @@ export default async function handler(req, res) {
     const files = req.body?.files || [];
     if (!Array.isArray(files) || files.length > 2) {
       return res.status(400).json({ error: "Poți atașa maximum două fișiere odată." });
+    }
+    if (guest && files.length > 0) {
+      return res.status(403).json({ error: "Atașarea fișierelor este disponibilă după conectarea la un cont ELVORAQ AI." });
     }
     let totalFileSize = 0;
     const fileParts = files.map((file) => {
