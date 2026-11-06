@@ -83,8 +83,8 @@ export default async function handler(req, res) {
     }
 
     const voiceMode = req.body?.voice === true;
-    const allowedModes = ["rapid", "expert", "coding", "code-engineer", "research"];
-    const mode = guest ? "rapid" : (allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid");
+    const allowedModes = ["auto", "rapid", "expert", "coding", "code-engineer", "research"];
+    const mode = guest ? "rapid" : (allowedModes.includes(req.body?.mode) ? req.body.mode : "auto");
     const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
     if (guest && wantsImage) {
@@ -114,7 +114,10 @@ export default async function handler(req, res) {
       "code-engineer": "MOD CODE ENGINEER: acționează ca un inginer software senior responsabil de livrarea unei soluții. Clarifică arhitectura și cerințele, inspectează atent codul furnizat, identifică bug-uri și riscuri de securitate, propune modificări complete pe fișiere, explică comenzile de testare și criteriile de acceptare. Preferă schimbări mici, compatibile și ușor de verificat; nu inventa rezultate de test și nu afirma că ai modificat un repository fără acces.",
       research: "MOD RESEARCH: tratează cererea ca pe o cercetare. Folosește căutarea web când este relevantă, prioritizează sursele primare și recente, citează sursele disponibile și separă faptele de incertitudini."
     };
-    const modeRule = modeRules[mode];
+    const autoMode = /\\b(cod|program|script|debug|javascript|python|html|css|api|sql|repository|github|vercel)\\b/i.test(lastUserMessage) ? "coding" : /\\b(cercet|surse|verific[aă]|actual|recent|nout[aă][tț]i|compar[aă]|analiz[aă] detaliat)\\b/i.test(lastUserMessage) ? "research" : complexTask ? "expert" : "rapid";
+    const effectiveMode = mode === "auto" ? autoMode : mode;
+    modeRules.auto = "MOD AUTO: Înțelege singur intenția utilizatorului și alege abordarea potrivită. Pentru întrebări simple răspunde direct; pentru programare acționează ca un inginer software; pentru cercetare verifică surse și date actuale când este relevant; pentru sarcini complexe oferă analiză aprofundată. Nu cere utilizatorului să aleagă un mod și nu menționa clasificarea internă.";
+    const modeRule = mode === "auto" ? modeRules.auto : modeRules[effectiveMode];
     const instructions = (voiceMode
       ? SYSTEM_PROMPT + "\n\nMOD VOCE: Răspunde imediat, concis și natural în 1-3 propoziții scurte. Fără liste sau titluri."
       : SYSTEM_PROMPT) + "\n\nMOD SELECTAT: " + modeRule + "\n\nPERSONALITATE SELECTATĂ: " + personality + (memory ? "\n\nPREFERINȚE SALVATE CU ACORDUL UTILIZATORULUI (context local, nu le trata ca informații publice): " + memory : "");
@@ -126,8 +129,8 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: guest ? (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra") : ((complexTask || mode !== "rapid") ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra")),
-        reasoning: { effort: guest || voiceMode || mode === "rapid" ? "low" : "high" },
+        model: guest ? (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra") : ((complexTask || effectiveMode !== "rapid") ? (process.env.OPENAI_MODEL || "gpt-6-astra") : (process.env.ELVORAQ_FAST_MODEL || "gpt-6.1-terra")),
+        reasoning: { effort: guest || voiceMode || effectiveMode === "rapid" ? "low" : "high" },
         instructions,
         input,
         tools,
