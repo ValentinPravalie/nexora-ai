@@ -72,5 +72,5 @@ test("public information and AdSense configuration use the registered domain", a
   assert.ok(robots.includes("Sitemap: https://elvoraq-ai.vercel.app/sitemap.xml"));
   assert.ok(sitemap.includes("https://elvoraq-ai.vercel.app/"));
   assert.ok(ads.includes("google.com, pub-8165826899810634, DIRECT"));
-  assert.ok(config.includes("pagead.googlesyndication.com"));
+  assert.ok(config.includes("pagead2.googlesyndication.com"));
 });
