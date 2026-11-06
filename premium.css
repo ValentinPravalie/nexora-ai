@@ -1,0 +1,140 @@
+/* ELVORAQ AI — premium visual identity. Copyright (c) 2026 ELVORAQ AI. */
+:root{
+ --bg:#090b12;--side:#0d1019;--panel:#121725;--panel2:#182033;--line:#29334a;
+ --text:#f4f6ff;--muted:#9ba7bd;--accent:#9b8cff;--accent-ink:#0b0d16;
+}
+html,body,.app{background:var(--bg)}
+body{
+ background:
+  radial-gradient(ellipse at 78% 8%,rgba(91,77,190,.20),transparent 34%),
+  radial-gradient(ellipse at 22% 82%,rgba(38,139,184,.13),transparent 32%),#090b12;
+}
+.app{background:transparent}
+.sidebar{
+ background:linear-gradient(180deg,rgba(17,21,34,.97),rgba(11,14,23,.98));
+ border-right:1px solid rgba(151,164,205,.13);
+ box-shadow:12px 0 50px rgba(0,0,0,.12);
+}
+.brand{letter-spacing:2px;font-size:14px}
+.brandmark{
+ background:linear-gradient(145deg,#282348,#132a3b);
+ border:1px solid rgba(174,157,255,.42);
+ box-shadow:0 0 24px rgba(139,119,255,.15),inset 0 1px rgba(255,255,255,.12);
+}
+.newchat{
+ border:1px solid rgba(161,146,255,.38);
+ border-radius:12px;
+ background:linear-gradient(110deg,rgba(109,91,204,.20),rgba(42,112,145,.12));
+ box-shadow:inset 0 1px rgba(255,255,255,.06);
+}
+.newchat>span{color:#b8adff}
+.newchat:hover{background:linear-gradient(110deg,rgba(109,91,204,.32),rgba(42,112,145,.2));border-color:#9b8cff}
+.side-label{color:#7887a6}
+.admin-toggle,.archive-toggle,.history-search{
+ border-color:rgba(144,160,198,.17);border-radius:10px;background:rgba(255,255,255,.025)
+}
+.history button{color:#c6cde0}
+.history button:hover,.history button[style*="background"]{background:rgba(148,137,255,.12)}
+.account{border-color:rgba(144,160,198,.16)}
+.account-avatar{background:linear-gradient(135deg,#5549a4,#1d6681);color:#fff}
+.main{
+ background:
+  radial-gradient(ellipse at 50% -12%,rgba(113,95,210,.18),transparent 48%),
+  radial-gradient(ellipse at 100% 70%,rgba(35,125,157,.07),transparent 35%),transparent;
+}
+.topbar{
+ background:rgba(9,11,18,.72);border-bottom:1px solid rgba(160,172,211,.10);
+ backdrop-filter:blur(22px);
+}
+.model{letter-spacing:1.8px}
+.model span{color:#b6aaff!important}
+.status{color:#a1acc4}
+.chat-scroll{
+ background-image:linear-gradient(rgba(170,180,220,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(170,180,220,.018) 1px,transparent 1px);
+ background-size:44px 44px;
+ mask-image:linear-gradient(to bottom,black 0%,black 78%,transparent 100%);
+}
+.orb{
+ width:68px;height:68px;border-radius:22px;
+ background:linear-gradient(145deg,rgba(132,112,255,.22),rgba(32,151,183,.13));
+ border:1px solid rgba(174,158,255,.46);
+ box-shadow:0 0 0 8px rgba(145,126,255,.045),0 12px 48px rgba(91,75,184,.22),inset 0 1px rgba(255,255,255,.13);
+}
+.welcome h1{
+ background:linear-gradient(105deg,#fff 12%,#d8d1ff 52%,#a7e9f7 92%);
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+ letter-spacing:-2.2px;font-weight:720;
+}
+.welcome p{color:#aab5cc}
+.welcome-caption{color:#8290ad}
+.suggestion{
+ border:1px solid rgba(151,165,207,.17);border-radius:15px;
+ background:linear-gradient(145deg,rgba(25,32,51,.88),rgba(15,21,35,.88));
+ box-shadow:inset 0 1px rgba(255,255,255,.045),0 8px 24px rgba(0,0,0,.10);
+}
+.suggestion:hover{
+ border-color:rgba(166,150,255,.58);
+ background:linear-gradient(145deg,rgba(42,42,76,.92),rgba(17,34,51,.92));
+ box-shadow:0 12px 30px rgba(66,56,139,.17);transform:translateY(-2px)
+}
+.suggestion b{color:#f0efff}.suggestion span{color:#9ba9c3}
+.messages{max-width:850px;gap:30px}
+.message{line-height:1.82}
+.avatar{
+ border-radius:11px;background:linear-gradient(145deg,#6556bd,#287b91);
+ color:white;box-shadow:0 4px 16px rgba(84,74,164,.22)
+}
+.message.user .avatar{background:#263247;color:#dfe9ff}
+.message.user .bubble{
+ border:1px solid rgba(150,164,205,.19);border-radius:18px;
+ background:linear-gradient(145deg,#202a3d,#182235);
+}
+.message.admin .bubble{background:#211d34;border-color:#51466b}
+.bubble pre{
+ border:1px solid rgba(153,166,208,.19);border-radius:13px;
+ background:#0a0e17;box-shadow:inset 0 1px rgba(255,255,255,.04)
+}
+.code-copy,.memory-actions button{
+ border-color:rgba(161,148,255,.25);background:#1c2235;color:#dcd8ff;border-radius:9px
+}
+.composer-wrap{background:linear-gradient(180deg,transparent,rgba(9,11,18,.96) 20%)}
+.composer{
+ max-width:850px;border:1px solid rgba(159,148,255,.29);border-radius:22px;
+ background:linear-gradient(145deg,rgba(24,30,48,.97),rgba(15,22,36,.97));
+ box-shadow:0 18px 55px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.075);
+}
+.composer:focus-within{
+ border-color:rgba(174,158,255,.75);
+ box-shadow:0 0 0 4px rgba(145,126,255,.10),0 18px 55px rgba(0,0,0,.34)
+}
+.composer textarea{color:#f7f7ff}
+.composer textarea::placeholder{color:#8290aa}
+.ai-mode,.voice-btn{
+ border:1px solid rgba(154,168,210,.20);border-radius:10px;
+ background:rgba(255,255,255,.045);color:#d9e0f3
+}
+.voice-btn:hover,.voice-btn.active{border-color:#9b8cff;background:rgba(139,119,255,.16)}
+.send{
+ border-radius:12px;background:linear-gradient(135deg,#b8aaff,#78d5e9);
+ color:#111323;box-shadow:0 5px 18px rgba(128,112,230,.24)
+}
+.send:hover{background:linear-gradient(135deg,#c8bdff,#9ae8f5)}
+.memory-panel{
+ border-color:rgba(159,148,255,.24);border-radius:15px;
+ background:rgba(19,25,41,.96)
+}
+.disclaimer{color:#75819b}
+.side-bottom{color:#c5cbe0}
+.side-bottom span{color:#8290aa}
+.side-bottom nav a{color:#b6adff}
+.mobile-menu{border-color:rgba(154,168,210,.2);background:#171e2e}
+@media(max-width:700px){
+ .sidebar{background:rgba(12,16,27,.99);backdrop-filter:blur(24px)}
+ .welcome h1{letter-spacing:-1.4px}
+ .chat-scroll{background-size:34px 34px}
+ .composer{border-radius:18px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .orb{animation:elvoraqGlow 7s ease-in-out infinite}
+ @keyframes elvoraqGlow{0%,100%{box-shadow:0 0 0 8px rgba(145,126,255,.045),0 12px 48px rgba(91,75,184,.18),inset 0 1px rgba(255,255,255,.13)}50%{box-shadow:0 0 0 12px rgba(145,126,255,.035),0 14px 58px rgba(35,153,181,.20),inset 0 1px rgba(255,255,255,.13)}}
+}
