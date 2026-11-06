@@ -87,6 +87,13 @@ export default async function handler(req, res) {
     const mode = allowedModes.includes(req.body?.mode) ? req.body.mode : "rapid";
     const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.content || "";
     const wantsImage = /\b(genereaz[aă]|creeaz[aă]|deseneaz[aă]|realizeaz[aă]|editeaz[aă])\b.{0,100}\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b|\b(imagine|poz[aă]|ilustra[tț]ie|logo|poster|wallpaper|desen)\b.{0,100}\b(mea|un|o|nou[aă]|pentru)\b/i.test(lastUserMessage);
+    if (guest && wantsImage) {
+      return res.status(403).json({ error: "Generarea imaginilor este disponibilă utilizatorilor conectați. Creează un cont gratuit pentru această funcție." });
+    }
+    if (guest) {
+      const remaining = await consumeGuestDailyMessage(req, res, 10);
+      if (remaining === null) return;
+    }
     const needsWeb = /\b(azi|astăzi|acum|actual|actualizat|ultim[ae]|recent|nout[aă][tț]i|știri|vremea|prognoz[aă]|pre[tț]uri|curs valutar|rezultate live|disponibilitate|program actual)\b/i.test(lastUserMessage) || /\b(caut[aă] pe internet|verific[aă] online|surse actuale|linkuri oficiale)\b/i.test(lastUserMessage);
     const complexTask = lastUserMessage.length > 700 || /\b(analiz[aă] aprofundat[aă]|compar[aă] detaliat|arhitectur[aă]|debug|eroare|strategie|plan detaliat|proiect complet|cod complet|securitate|demonstra[tț]ie|cercetare|pas cu pas)\b/i.test(lastUserMessage);
     const tools = [{ type: "web_search" }];
