@@ -240,3 +240,27 @@ html,body,.app{background:#0b0c10;color:#f5f1eb}
  .send{width:40px;height:40px;flex-basis:40px;border-radius:13px}
 }
 @media(prefers-reduced-motion:reduce){.orbit-ring{animation:none!important}}
+
+/* Final voice-first ELVORAQ landing */
+.welcome h1{font-size:clamp(48px,7vw,82px);line-height:1.04;letter-spacing:-3.2px;font-weight:400}
+.welcome h1 em{color:#f2a36e;font-style:normal}
+.welcome-copy{max-width:490px}
+.welcome-foot{display:none!important}
+.composer{align-items:center}
+.composer textarea{flex:1;min-width:0}
+.composer-bottom{display:flex;align-items:center;justify-content:flex-end;flex:0 0 auto;padding:0}
+.composer-actions{display:flex;align-items:center;gap:8px}
+.composer-actions select,.composer-actions #workspaceAdd,.composer-actions #personalityToggle,.composer-actions #attach,.composer-actions #memoryToggle,.composer-actions #speakToggle{display:none!important}
+.composer-actions #mic{display:grid!important;place-items:center;width:43px;height:43px;flex:0 0 43px;border:1px solid rgba(242,163,110,.34);border-radius:14px;background:rgba(242,163,110,.09);color:#f4b184;font-size:0}
+.composer-actions #mic:hover,.composer-actions #mic.active{border-color:#f2a36e;background:rgba(242,163,110,.2);box-shadow:0 0 24px rgba(242,163,110,.14)}
+.composer-actions #mic.active{animation:voicePulse 1.5s ease-in-out infinite}
+.composer-actions #mic svg{width:21px;height:21px}
+.composer-actions .send{width:43px;height:43px;flex:0 0 43px;border-radius:14px}
+#voiceStatus{display:none!important}
+@keyframes voicePulse{50%{box-shadow:0 0 0 7px rgba(242,163,110,.09),0 0 26px rgba(242,163,110,.25)}}
+@media(max-width:700px){
+ .welcome h1{font-size:clamp(43px,11vw,62px);letter-spacing:-2px}
+ .composer{gap:7px}
+ .composer-actions{gap:6px}
+ .composer-actions #mic,.composer-actions .send{width:41px;height:41px;flex-basis:41px}
+}
