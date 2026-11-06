@@ -55,15 +55,23 @@ test("workspace and memory controls are available in the website UI", async () =
 });
 
 
-test("public information and privacy pages are present and linked", async () => {
-  const [html, about, contact, privacy, robots] = await Promise.all([
-    read("index.html"), read("about.html"), read("contact.html"), read("privacy.html"), read("robots.txt")
+test("public information and AdSense configuration use the registered domain", async () => {
+  const [html, about, contact, privacy, robots, sitemap, ads, config] = await Promise.all([
+    read("index.html"), read("about.html"), read("contact.html"), read("privacy.html"),
+    read("robots.txt"), read("sitemap.xml"), read("ads.txt"), read("vercel.json")
   ]);
-  assert.match(html, /href="\/about\.html"/);
-  assert.match(html, /href="\/contact\.html"/);
-  assert.match(html, /href="\/privacy\.html"/);
+  assert.match(html, /href="\\/about\\.html"/);
+  assert.match(html, /href="\\/contact\\.html"/);
+  assert.match(html, /href="\\/privacy\\.html"/);
   assert.match(about, /Despre ELVORAQ AI/);
   assert.match(contact, /Contact/);
   assert.match(privacy, /Politica de confidențialitate/);
-  assert.doesNotMatch(robots, /elvoraq-ai\.vercel\.app/);
+  assert.match(html, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/"/);
+  assert.match(about, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/about\\.html"/);
+  assert.match(contact, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/contact\\.html"/);
+  assert.match(privacy, /rel="canonical" href="https:\\/\\/elvoraq-ai\\.vercel\\.app\\/privacy\\.html"/);
+  assert.match(robots, /Sitemap: https:\\/\\/elvoraq-ai\\.vercel\\.app\\/sitemap\\.xml/);
+  assert.match(sitemap, /https:\\/\\/elvoraq-ai\\.vercel\\.app\\//);
+  assert.match(ads, /google\\.com, pub-8165826899810634, DIRECT/);
+  assert.match(config, /pagead\\.googlesyndication\\.com/);
 });
