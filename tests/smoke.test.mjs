@@ -133,7 +133,7 @@ test("guest chat is text-only and has a persistent daily quota", async () => {
 test("minimal ELVORAQ interface removes visible mode controls and enables automatic routing", async () => {
   const [html, css, app, api] = await Promise.all([read("index.html"), read("premium.css"), read("app.js"), read("api/chat.js")]);
   assert.match(html, /welcome-orbit/);
-  assert.match(html, /Orice ai în minte/);
+  assert.match(html, /Welcome,<br><em>how can I help you\?/);
   assert.match(css, /\.composer-actions select/);
   assert.match(css, /\.voice-btn/);
   assert.match(css, /\.hint/);
@@ -142,4 +142,6 @@ test("minimal ELVORAQ interface removes visible mode controls and enables automa
   assert.match(api, /const effectiveMode = mode === "auto" \? autoMode : mode/);
   assert.match(api, /MOD AUTO/);
   assert.match(app, /mode:aiMode/);
+  assert.match(html, /id="mic"/);
+  assert.match(app, /startRealtimeVoice\(\)/);
 });
