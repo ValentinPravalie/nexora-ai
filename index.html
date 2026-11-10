@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#09090f">
+<meta name="theme-color" content="#0c0e13">
 <meta name="description" content="ELVORAQ AI este asistentul tău de inteligență artificială: conversații, programare, documente, traduceri, idei și răspunsuri în limba română.">
 <meta name="application-name" content="ELVORAQ AI">
 
@@ -115,12 +115,81 @@ button,textarea,input,select{font:inherit}button{cursor:pointer;touch-action:man
 @media(orientation:landscape) and (max-height:500px){.welcome{margin-top:14px}.orb{width:38px;height:38px;margin-bottom:10px}.orb svg{width:32px;height:32px}.welcome h1{font-size:28px}.welcome p{margin-bottom:10px}.welcome-caption{margin-bottom:10px}.suggestions{grid-template-columns:repeat(2,minmax(0,1fr))}.suggestion{min-height:55px}.composer textarea{max-height:85px}}
 .side-bottom nav{margin-top:7px;line-height:1.8}.side-bottom nav a{color:#aeb79f;text-decoration:none}.side-bottom nav a:hover{color:var(--accent);text-decoration:underline}</style><link rel="stylesheet" href="/premium.css"></head>
 <body><div class="app">
-<aside class="sidebar" id="sidebar"><div class="brand"><span class="brandmark"><svg viewBox="0 0 64 64" role="img" aria-label="ELVORAQ AI" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="elvLogo" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#e9ddff"/><stop offset=".42" stop-color="#9b5cff"/><stop offset="1" stop-color="#31c8ff"/></linearGradient><linearGradient id="elvOrbit" x1="4" y1="32" x2="60" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd36e"/><stop offset=".5" stop-color="#fff2b0"/><stop offset="1" stop-color="#ff9e35"/></linearGradient></defs><path d="M13 48 29 12c1.2-2.7 5-2.7 6.2 0L51 48h-12L32 29l-7 19H13Z" fill="url(#elvLogo)"/><path d="M5 43C17 57 48 55 59 35" fill="none" stroke="url(#elvOrbit)" stroke-width="3.2" stroke-linecap="round"/><circle cx="52" cy="14" r="3" fill="#ffe39a"/></svg></span><span>ELVORAQ <i>AI</i></span></div>
-<button class="newchat" id="newChat"><span>＋</span> Chat nou</button><div class="side-label">Recent</div><button type="button" id="adminToggle" class="admin-toggle" hidden>🛡️ Panou administrator</button><input id="historySearch" class="history-search" type="search" placeholder="Caută în conversații…" aria-label="Caută conversații"><button type="button" id="archivedToggle" class="archive-toggle">Arhivate</button><nav class="history" id="history"></nav>
-<div class="account"><button type="button" id="accountToggle" class="account-toggle"><span class="account-avatar">✦</span><span class="account-copy"><b>Contul meu</b><small>Conectare sau înregistrare</small></span><span class="account-chevron">⌄</span></button><div class="account-panel" id="accountPanel"><div class="auth-heading"><strong>Bine ai revenit</strong><span>Conectează-te pentru a-ți păstra conversațiile sincronizate.</span></div><label class="auth-label" for="authEmail">Adresă de email</label><input id="authEmail" type="email" autocomplete="email" placeholder="nume@exemplu.com"><label class="auth-label" for="authPassword">Parolă</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 caractere"><button type="button" id="googleSignIn" class="google-auth"><span class="google-g">G</span><span>Continuă cu Google</span></button><div class="auth-divider"><span>sau cu email</span></div><div class="account-actions"><button id="signIn">Conectare</button><button id="signUp">Creează cont</button></div><button id="signOut" style="display:none;margin-top:6px">Deconectare</button><button id="exportChats" type="button" style="margin-top:6px">↓ Exportă backup conversații</button><div class="account-note" id="authNote">Datele contului sunt gestionate în siguranță prin Supabase.</div></div></div><div class="side-bottom">ELVORAQ AI<br><span>Asistent AI personal</span><nav aria-label="Informații"><a href="/about.html">Despre noi</a> · <a href="/contact.html">Contact</a> · <a href="/privacy.html">Confidențialitate</a> · <a href="/terms.html">Drepturi de autor</a></nav><span class="copyright">© 2026 ELVORAQ AI. Toate drepturile rezervate.</span></div></aside>
-<main class="main"><div class="topbar"><div class="topbar-brand"><button class="mobile-menu" id="menu" aria-label="Deschide meniul">☰</button><span class="topbar-mark">E</span><span class="model">ELVORAQ<span> / INTELLIGENCE</span></span></div><span class="status" id="status">Gata să începem</span></div>
-<section class="chat-scroll" id="chatScroll"><div class="welcome" id="welcome"><h1>Bun venit în ELVORAQ</h1><p>Scrie un mesaj mai jos pentru a începe conversația.</p></div><div class="messages" id="messages"></div></section>
-<div class="composer-wrap"><div class="composer"><textarea id="prompt" rows="1" placeholder="Întreabă orice sau atașează un document..." aria-label="Mesaj"></textarea><div class="composer-bottom"><span class="hint" id="voiceStatus">Enter pentru trimitere · Shift + Enter pentru rând nou</span><div class="composer-actions"><select id="workspaceSelect" class="ai-mode" aria-label="Spațiu de lucru" title="Alege spațiul de lucru"><option value="general">General</option></select><button class="voice-btn" id="workspaceAdd" type="button" aria-label="Creează spațiu de lucru" title="Creează workspace">＋</button><select id="aiMode" class="ai-mode" aria-label="Mod AI" title="Mod automat"><option value="auto">Auto</option><option value="rapid">⚡ Rapid</option><option value="expert">🧠 Expert</option><option value="coding">💻 Coding</option><option value="code-engineer">🛠 Code Engineer</option><option value="research">🔎 Research</option></select><button class="voice-btn" id="personalityToggle" type="button" aria-label="Schimbă personalitatea AI" title="Mod de conversație">🙂</button><button class="voice-btn" id="attach" type="button" aria-label="Atașează un document" title="Atașează PDF, Word, Excel, PowerPoint, TXT sau CSV">📎</button><input id="fileInput" type="file" accept=".pdf,.txt,.md,.csv,.docx,.pptx,.xlsx" multiple hidden><button class="voice-btn" id="memoryToggle" type="button" aria-label="Preferințe și memorie" title="Memorie personalizată">🧠</button><button class="voice-btn" id="mic" type="button" aria-label="Începe conversația vocală" title="Vorbește cu ELVORAQ"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5M9 21.5h6"/></svg></button><button class="send" id="send" aria-label="Trimite">↑</button></div></div><div id="attachmentList" class="attachment-list"></div></div><div id="memoryPanel" class="memory-panel" hidden><label for="memoryInput">🧠 Preferințe personale (se salvează doar pe acest dispozitiv)</label><textarea id="memoryInput" rows="2" placeholder="Ex.: Prefer răspunsuri scurte și explicații pas cu pas. Nu introduce parole sau date sensibile."></textarea><div class="memory-actions"><button type="button" id="memorySave">Salvează preferințele</button><button type="button" id="memoryClear">Șterge memoria</button></div></div><div class="disclaimer">Vocea este generată de AI. Fișierele sunt trimise pentru analiză și nu sunt salvate ca memorie. ELVORAQ AI poate face greșeli; verifică informațiile importante.</div></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand-row">
+    <a class="brand" href="/" aria-label="ELVORAQ AI acasă"><span class="brandmark">E</span><span class="brand-word">ELVORAQ<span>AI</span></span></a>
+    <span class="brand-version">STUDIO</span>
+  </div>
+  <button class="newchat" id="newChat" type="button"><span class="newchat-icon">＋</span><span>Conversație nouă</span><kbd>⌘ K</kbd></button>
+  <div class="side-section-head"><span>SPAȚIUL TĂU</span><span class="side-dot"></span></div>
+  <button type="button" id="adminToggle" class="admin-toggle" hidden>Panou administrator</button>
+  <label class="search-wrap"><span>⌕</span><input id="historySearch" class="history-search" type="search" placeholder="Caută conversații…" aria-label="Caută conversații"><kbd>⌘ F</kbd></label>
+  <button type="button" id="archivedToggle" class="archive-toggle">Arhivate</button>
+  <nav class="history" id="history" aria-label="Conversații recente"></nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-note"><span class="note-icon">✦</span><span><b>Un spațiu pentru idei.</b><small>Gândește. Creează. Construiește.</small></span></div>
+    <div class="account">
+      <button type="button" id="accountToggle" class="account-toggle">
+        <span class="account-avatar">V</span><span class="account-copy"><b>Contul meu</b><small>Conectare sau înregistrare</small></span><span class="account-chevron">↗</span>
+      </button>
+      <div class="account-panel" id="accountPanel">
+        <div class="auth-top"><span class="auth-symbol">✦</span><button class="auth-close" type="button" aria-label="Închide" onclick="document.getElementById('accountPanel').classList.remove('open')">×</button></div>
+        <div class="auth-heading"><strong>Intră în spațiul tău.</strong><span>Conectează-te pentru a păstra conversațiile sincronizate.</span></div>
+        <label class="auth-label" for="authEmail">ADRESĂ DE EMAIL</label><input id="authEmail" type="email" autocomplete="email" placeholder="tu@exemplu.com">
+        <label class="auth-label" for="authPassword">PAROLĂ</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 caractere">
+        <button type="button" id="signIn" class="auth-primary">Conectare <span>→</span></button>
+        <div class="auth-divider"><span>sau</span></div>
+        <button type="button" id="googleSignIn" class="google-auth"><span class="google-g">G</span><span>Continuă cu Google</span></button>
+        <button type="button" id="signUp" class="auth-secondary">Creează un cont nou</button>
+        <button id="signOut" type="button" class="auth-secondary" style="display:none;margin-top:8px">Deconectare</button>
+        <button id="exportChats" type="button" class="export-button">↓ Exportă conversațiile</button>
+        <div class="account-note" id="authNote">Datele contului sunt gestionate în siguranță prin Supabase.</div>
+      </div>
+    </div>
+    <footer class="side-footer"><span>© 2026 ELVORAQ AI</span><nav aria-label="Informații"><a href="/about.html">Despre</a><a href="/contact.html">Contact</a><a href="/privacy.html">Confidențialitate</a><a href="/terms.html">Termeni</a></nav></footer>
+  </div>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left"><button class="mobile-menu" id="menu" aria-label="Deschide meniul">☰</button><div class="topbar-context"><span class="context-mark">E</span><span><b>ELVORAQ</b><small>AI WORKSPACE</small></span></div><span class="topbar-divider"></span><span class="page-title">Conversație nouă</span></div>
+    <div class="topbar-right"><span class="status-indicator"></span><span class="status" id="status">Pregătit pentru tine</span><button class="topbar-account" type="button" onclick="document.getElementById('accountPanel').classList.toggle('open')">Cont <span>↗</span></button></div>
+  </header>
+  <section class="chat-scroll" id="chatScroll">
+    <div class="welcome" id="welcome">
+      <div class="welcome-eyebrow"><span></span> INTELLIGENCE, REIMAGINED</div>
+      <h1>Ideile tale merită<br><em>mai mult.</em></h1>
+      <p>Un loc în care întrebările devin idei, iar ideile devin lucruri reale.</p>
+      <div class="welcome-rule"><span>ÎNCEPE CU O IDEE</span><i></i></div>
+      <div class="welcome-tiles">
+        <div class="welcome-tile"><span class="tile-index">01</span><b>Explorează</b><small>Descoperă răspunsuri și perspective noi.</small></div>
+        <div class="welcome-tile"><span class="tile-index">02</span><b>Creează</b><small>Transformă o idee într-un plan concret.</small></div>
+        <div class="welcome-tile"><span class="tile-index">03</span><b>Construiește</b><small>Lucrează la proiecte, cod și documente.</small></div>
+      </div>
+    </div>
+    <div class="messages" id="messages"></div>
+  </section>
+  <div class="composer-wrap">
+    <div class="composer-shell">
+      <div class="composer-topline"><span class="composer-label">MESAJ NOU</span><span class="composer-secure"><i></i> Spațiu privat</span></div>
+      <div class="composer"><textarea id="prompt" rows="1" placeholder="Spune-mi la ce te gândești…" aria-label="Mesaj"></textarea>
+        <div class="composer-bottom"><span class="hint" id="voiceStatus">Enter pentru trimitere · Shift + Enter pentru rând nou</span><div class="composer-actions">
+          <select id="workspaceSelect" class="ai-mode" aria-label="Spațiu de lucru" title="Alege spațiul de lucru"><option value="general">General</option></select>
+          <button class="tool-btn" id="workspaceAdd" type="button" aria-label="Creează spațiu de lucru" title="Creează workspace">＋</button>
+          <select id="aiMode" class="ai-mode" aria-label="Mod AI" title="Mod automat"><option value="auto">Auto</option><option value="rapid">Rapid</option><option value="expert">Expert</option><option value="coding">Coding</option><option value="code-engineer">Code Engineer</option><option value="research">Research</option></select>
+          <button class="tool-btn" id="personalityToggle" type="button" aria-label="Schimbă personalitatea AI" title="Mod de conversație">🙂</button>
+          <button class="tool-btn" id="attach" type="button" aria-label="Atașează un document" title="Atașează un document">⌁</button>
+          <input id="fileInput" type="file" accept=".pdf,.txt,.md,.csv,.docx,.pptx,.xlsx" multiple hidden>
+          <button class="tool-btn" id="memoryToggle" type="button" aria-label="Preferințe și memorie" title="Memorie personalizată">◉</button>
+          <button class="tool-btn sound-toggle" id="speakToggle" type="button" aria-label="Activează răspunsurile vocale" title="Răspunsuri vocale">◖</button>
+          <button class="voice-btn" id="mic" type="button" aria-label="Începe conversația vocală live" title="Vorbește cu ELVORAQ"><span class="mic-glyph">●</span><span>Voce live</span></button>
+          <button class="send" id="send" aria-label="Trimite mesaj">↑</button>
+        </div></div>
+      </div>
+      <div id="attachmentList" class="attachment-list"></div>
+    </div>
+    <div id="memoryPanel" class="memory-panel" hidden><label for="memoryInput">Preferințe personale (se salvează doar pe acest dispozitiv)</label><textarea id="memoryInput" rows="2" placeholder="Ex.: Prefer răspunsuri scurte și explicații pas cu pas. Nu introduce parole sau date sensibile."></textarea><div class="memory-actions"><button type="button" id="memorySave">Salvează preferințele</button><button type="button" id="memoryClear">Șterge memoria</button></div></div>
+    <div class="disclaimer">ELVORAQ AI poate face greșeli. Verifică informațiile importante.</div>
+  </div>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/app.js" defer></script></body></html>
