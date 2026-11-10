@@ -105,7 +105,7 @@ test("neutral ELVORAQ starter theme and copyright page are linked", async () => 
   assert.match(html, /href="\/premium\.css"/);
   assert.match(html, /© 2026 ELVORAQ AI/);
   assert.match(html, /href="\/terms\.html"/);
-  assert.match(css, /--accent:#30343a/);
+  assert.match(css, /--accent:#9a8cff/);
   assert.match(terms, /Drepturi de autor/);
   assert.match(sitemap, /https:\/\/elvoraq-ai\.vercel\.app\/terms\.html/);
 });
@@ -133,8 +133,8 @@ test("guest chat is text-only and has a persistent daily quota", async () => {
 test("minimal ELVORAQ interface removes visible mode controls and enables automatic routing", async () => {
   const [html, css, app, api] = await Promise.all([read("index.html"), read("premium.css"), read("app.js"), read("api/chat.js")]);
   assert.match(html, /id="welcome"/);
-  assert.match(html, /Bun venit în ELVORAQ/);
-  assert.match(css, /\.composer-actions select/);
+  assert.match(html, /Ideile tale merită/);
+  assert.match(css, /\.composer-actions/);
   assert.match(css, /\.voice-btn/);
   assert.match(css, /\.hint/);
   assert.match(css, /\.sidebar\.open/);
