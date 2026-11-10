@@ -98,14 +98,14 @@ test("chat storage enforces owner-only row-level security", async () => {
   assert.match(sql, /revoke all on table private\.api_rate_limits from public, anon, authenticated/i);
 });
 
-test("premium ELVORAQ theme and copyright page are linked", async () => {
+test("neutral ELVORAQ starter theme and copyright page are linked", async () => {
   const [html, css, terms, sitemap] = await Promise.all([
     read("index.html"), read("premium.css"), read("terms.html"), read("sitemap.xml")
   ]);
   assert.match(html, /href="\/premium\.css"/);
   assert.match(html, /© 2026 ELVORAQ AI/);
   assert.match(html, /href="\/terms\.html"/);
-  assert.match(css, /--accent:#9b8cff/);
+  assert.match(css, /--accent:#30343a/);
   assert.match(terms, /Drepturi de autor/);
   assert.match(sitemap, /https:\/\/elvoraq-ai\.vercel\.app\/terms\.html/);
 });
